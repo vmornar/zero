@@ -1,23 +1,5 @@
-#if 0
-
-#include "gpio.h"
-int main(int argc, char **argv) {
-  int g=26, rep;
-
-  setup_io();
-
-  INP_GPIO(g);  OUT_GPIO(g);
-  for (rep = 0; rep < 10; rep++) {
-    BIT1(g);   sleep(1);
-    BIT0(g);   sleep(1);
-  }
-  return 0;
-} // main
-
-#else
-
-#include "bcm2835.h"
 #include <stdio.h>
+#include "bcm2835.h"
 
 // Blinks on RPi Plug P1 pin 11 (which is GPIO pin 17)
 #define PIN 26 //RPI_V2_GPIO_P1_37
@@ -34,5 +16,3 @@ int main(int argc, char **argv) {
   bcm2835_close();
   return 0;
 }
-
-#endif
