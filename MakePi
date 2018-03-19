@@ -1,0 +1,23 @@
+CC = arm-linux-gnueabihf-g++
+CFLAGS=-c -g -fpermissive
+SRCS=$(wildcard *.cpp)
+INCLUDES=$(wildcard *.h)
+OBJS=$(SRCS:.cpp=.o)
+MAKEFLAGS = --ignore-errors
+
+all:	prebuild mainPi postbuild
+
+prebuild:
+	rm *.o mainPi
+
+mainPi: $(OBJS)
+	$(CC) -o $@ $(OBJS)
+
+$(OBJS) : %.o: %.cpp $(INCLUDES)
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	rm *.o mainPi
+ 
+postbuild:
+	sudo cp mainPi /mnt/pi0
