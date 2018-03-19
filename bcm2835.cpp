@@ -8,6 +8,8 @@
 // $Id: bcm2835.c,v 1.25 2018/01/16 21:55:07 mikem Exp mikem $
 */
 
+#ifndef emu
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1790,3 +1792,6 @@ int main(int argc, char **argv)
 
 
 
+
+
+#endif // emu

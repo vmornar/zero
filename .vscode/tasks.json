@@ -5,16 +5,11 @@
             "label": "make",
             "type": "shell",
             "command": "make",
-            "args": []
-        },
-        {
-            "label": "makePi",
-            "type": "shell",
-            "command": "make",
-            "args": [
-                "-f", "MakePi"
-            ],
-            "problemMatcher": []
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
