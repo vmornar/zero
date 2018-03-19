@@ -3,7 +3,7 @@ CFLAGS=-c -g -fpermissive
 SRCS=$(wildcard *.cpp)
 INCLUDES=$(wildcard *.h)
 OBJS=$(SRCS:.cpp=.o)
-MAKEFLAGS = --ignore-errors
+MAKEFLAGS=--ignore-errors
 
 all:	prebuild mainPi postbuild
 

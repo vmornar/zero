@@ -3,7 +3,7 @@ CFLAGS=-c -g -fpermissive -D emu
 SRCS=$(wildcard *.cpp)
 INCLUDES=$(wildcard *.h)
 OBJS=$(SRCS:.cpp=.o)
-
+MAKEFLAGS=--ignore-errors
 main: $(OBJS)
 	$(CC) -o $@ $(OBJS) 
 
