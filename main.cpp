@@ -1,22 +1,23 @@
-#include <string.h>
-
-#ifdef emu
-#define BCM2835_H  // to skip it
-#include "bcm2835emu.h"
-#else
-#include "bcm2835.h"
-#endif
-// Blinks on RPi Plug P1 pin 11 (which is GPIO pin 17)
-#define PIN 26 //RPI_V2_GPIO_P1_37
-
-#include "sockets.h"
+#include "main.h"
 
 static UDPSocket sock(50101);
 static char IP[] = "192.168.137.1";
 static int port = 50100;
 
+simulator sim;
 
 int main(int argc, char **argv) {
+
+  init ();
+  return;
+
+
+  for (int i=0; segments[i] < 255; i++) {
+      printf ("%2d 0b%s ", i+32, Sevenseg::binary(segments[i]));
+      printf ("0b%s\n", Sevenseg::binary(Sevenseg::reverse(segments[i])));
+  }
+
+  return;
   char msg[] = "Alo alo";
   sock.sendTo (msg, strlen(msg)+1, IP, port);
 

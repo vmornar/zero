@@ -4,6 +4,12 @@ SRCS=$(wildcard *.cpp)
 INCLUDES=$(wildcard *.h)
 OBJS=$(SRCS:.cpp=.o)
 MAKEFLAGS=--ignore-errors
+
+all:	prebuild main
+
+prebuild:
+	rm main
+
 main: $(OBJS)
 	$(CC) -o $@ $(OBJS) 
 
