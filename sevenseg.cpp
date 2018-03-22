@@ -1,7 +1,7 @@
 #include <string>
 #include <stdio.h>
 using namespace std;
-
+#include "max7219.h"
 #include "sevenseg.h"
 
 unsigned char segments[] = {
@@ -41,9 +41,10 @@ unsigned char segments[] = {
 
 
 void Sevenseg::setInt (int val) {
-    char buf[digits+1];
+    char buf[8+1];
     sprintf (buf, format.c_str(), val);
     content = buf;
+    memcpy (max7219->content+start, buf, digits);
 }
 
 void Sevenseg::setStr (char *s) {

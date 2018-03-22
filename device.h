@@ -14,11 +14,11 @@ private:
     Device **p = NULL;
 public:
     int length = 0;
-    int find (string name) {
+    Device * find (string name) {
         for (int i=0; i < length; i++) {
-            if (name == p[i]->name) return i;
+            if (name == p[i]->name) return p[i];
         }
-        return -1;
+        return NULL;
     }
     void add (Device *d) {
         p = (Device **) realloc(p, sizeof (Device *) * (++length));

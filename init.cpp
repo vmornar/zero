@@ -23,16 +23,17 @@
             sscanf (buf, "%*s %s %s %d %d %s", name, parentName, &(s7->digits), &(s7->start), format);
             s7->name = name;
             s7->format = format;
-            if ((s7->registerIndex = sim.registers7219.find(parentName)) == -1) fatal ("Can't find parent for 7seg " + s7->name);
+            if (!(s7->max7219 = (Max7219 *) sim.registers7219.find(parentName))) fatal ("Can't find parent for 7seg " + s7->name);
         }
-        for (int i = 0; i < sim.registers7219.length; i++) {
-            Max7219 *m = (Max7219 *) sim.registers7219[i];
-            printf ("%d %s %d\n", i, m->name.c_str(), m->commonAnode);
-        }
-        
-        for (int i = 0; i < sim.sevenSegments.length; i++) {
-            Sevenseg *m = (Sevenseg *) sim.sevenSegments[i];
-            printf ("%d %s %s %d %d %s\n", i, m->name.c_str(), sim.registers7219[m->registerIndex]->name.c_str(), m->digits, m->start, m->format.c_str());
-        }
+
+    }
+    for (int i = 0; i < sim.registers7219.length; i++) {
+        Max7219 *m = (Max7219 *) sim.registers7219[i];
+        printf ("%d %s %d\n", i, m->name.c_str(), m->commonAnode);
+    }
+    
+    for (int i = 0; i < sim.sevenSegments.length; i++) {
+        Sevenseg *m = (Sevenseg *) sim.sevenSegments[i];
+        printf ("%d %s %s %d %d %s\n", i, m->name.c_str(), m->max7219->name.c_str(), m->digits, m->start, m->format.c_str());
     }
  }

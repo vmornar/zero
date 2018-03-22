@@ -1,41 +1,45 @@
 {
     "version": "0.2.0",
-    "configurations": [{
-    "name": "C++ Launch",
-    "preLaunchTask": "make",
-    "type": "cppdbg",
-    "request": "launch",
-    "program": "${workspaceRoot}/main",
-    "args": [],
-    "stopAtEntry": false,
-    "cwd": "${workspaceRoot}",
-    "environment": [],
-    "externalConsole": true,
-    "miDebuggerPath": "gdb",
-    "linux": {
-        "MIMode": "gdb"
-    },
-    "osx": {
-        "MIMode": "lldb"
-    },
-    "windows": {
-        "MIMode": "gdb"
-    }
-}, {
-    "name": "C++ Attach",
-    "type": "cppdbg",
-    "request": "attach",
-    "program": "${workspaceRoot}/main",
-    "miDebuggerPath": "gdb",
-    "processId": "${command:pickProcess}",
-    "linux": {
-        "MIMode": "gdb"
-    },
-    "osx": {
-        "MIMode": "lldb"
-    },
-    "windows": {
-        "MIMode": "gdb"
-    }
-}]
+    "configurations": [
+        {
+            "name": "C++ Launch",
+            "preLaunchTask": "make",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/main",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "miDebuggerPath": "gdb",
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "gdb.exe"
+            }
+        },
+        {
+            "name": "C++ Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "${workspaceRoot}/main",
+            "miDebuggerPath": "gdb",
+            "processId": "${command:pickProcess}",
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb"
+            }
+        }
+    ]
 }
