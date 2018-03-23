@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS=-c -g -fpermissive -D emu -Wno-deprecated
+CFLAGS=-c -g -fpermissive -D emu -Wno-deprecated -Wno-deprecated-declarations -Wno-permissive
 SRCS=$(wildcard *.cpp)
 INCLUDES=$(wildcard *.h)
 OBJS=$(SRCS:.cpp=.o)

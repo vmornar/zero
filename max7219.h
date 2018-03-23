@@ -1,7 +1,9 @@
 #include "device.h"
+
 class Max7219 : public Device {
 public:
     int commonAnode;
     Max7219 () {};
-    unsigned char content[8] = {0};
+    void setContent (const char *buf, int start, int digits);
+    void allocateBuf (DeviceCollection *dc);
 };

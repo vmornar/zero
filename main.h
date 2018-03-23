@@ -17,12 +17,4 @@ using namespace std;
 // Blinks on RPi Plug P1 pin 11 (which is GPIO pin 17)
 #define PIN 26 //RPI_V2_GPIO_P1_37
 
-class simulator {
-public:
-    DeviceCollection registers7219;
-    DeviceCollection sevenSegments;
-};
-
-void init();
-
-extern simulator sim;
+void init ();

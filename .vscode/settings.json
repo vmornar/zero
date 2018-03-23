@@ -3,6 +3,8 @@
         "system_error": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "limits": "cpp"
+        "limits": "cpp",
+        "xutility": "cpp",
+        "xlocale": "cpp"
     }
 }

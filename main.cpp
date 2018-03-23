@@ -1,32 +1,46 @@
+#include <stdio.h>
+#include <string.h>
 #include "main.h"
 
 static UDPSocket sock(50101);
-static char IP[] = "192.168.137.1";
+//static char IP[] = "192.168.137.1";
+static char IP[] = "127.0.0.1";
 static int port = 50100;
 
-simulator sim;
+Simulator sim;
+#define MAXBUF 128
 
 int main(int argc, char **argv) {
-
-  init ();
-  ((Sevenseg *) sim.sevenSegments[0])->setInt(1);
-
-  for (int i=0; i < sim.registers7219.length; i++) {
-    for (int j=0; j < 8; j++) {
-      printf ("%s ", Sevenseg::binary(((Max7219 *) sim.registers7219[i])->content[j]));
-    }
-  }
-  return;
-
-
+  unsigned char buf[MAXBUF+1];
+  char device[64+1], type[16+1];
+  int value, n;
   // for (int i=0; segments[i] < 255; i++) {
-  //     printf ("%2d 0b%s ", i+32, Sevenseg::binary(segments[i]));
-  //     printf ("0b%s\n", Sevenseg::binary(Sevenseg::reverse(segments[i])));
+  //     printf ("%2d %c 0b%s ", i+32, i+32, Sevenseg::binary(Sevenseg::segments[i]));
+  //     printf ("0b%s\n", Sevenseg::binary(Sevenseg::reverse(Sevenseg::segments[i])));
   // }
 
-  // return;
-  // char msg[] = "Alo alo";
-  // sock.sendTo (msg, strlen(msg)+1, IP, port);
+  init ();
+  
+  char msg[] = "Alo alo";
+  sock.sendTo (msg, strlen(msg)+1, IP, port);
+
+  while (1) {
+    n = sock.recv (buf, MAXBUF); 
+    if (n > 0) {
+      sscanf (buf, "%s %s %d", type, device, &value);
+      if (strcmp (type, "SO") == 0) {
+        Device *p = sim.sevenSegments.find (device);
+        ((Sevenseg *) p)->setInt (value);
+      } else if (strcmp (type, "BO") == 0) {
+        Device *p = sim.bitOuts.find(device);
+        ((Bit *) p)->setValue (value);
+      }
+    }
+    sim.registers7219.out();
+    sim.bitOuts.out();
+  }
+
+  return 0;
 
   // if (!bcm2835_init()) return 1;
   // bcm2835_gpio_fsel(PIN, BCM2835_GPIO_FSEL_OUTP);
