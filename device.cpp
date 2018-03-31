@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include <string.h>
 #include "device.h"
 
@@ -33,7 +34,7 @@ void DeviceCollection::out () {
             printf ("%p ", buffer);
         #endif
         bcm2835_gpio_write(pin, LOW);
-        bcm2835_aux_spi_transfernb (buffer, NULL, count * itemSize);
+        bcm2835_aux_spi_transfernb ((char *) buffer, NULL, count * itemSize);
         bcm2835_gpio_write(pin, HIGH);
         memcpy(oldBuffer, buffer, count*itemSize);
         #ifdef emu
@@ -43,7 +44,7 @@ void DeviceCollection::out () {
 }
 
 void DeviceCollection::in () {
-    bcm2835_aux_spi_transfernb (NULL, buffer, count * itemSize);
+    bcm2835_aux_spi_transfernb (NULL, (char *) buffer, count * itemSize);
 }
 
 unsigned char reverse (unsigned char c) {

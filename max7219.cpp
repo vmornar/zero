@@ -1,3 +1,4 @@
+#include <malloc.h>
 #include "max7219.h"
 #include "sevenseg.h"
 

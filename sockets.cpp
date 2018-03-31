@@ -22,7 +22,7 @@
 typedef int socklen_t;
 typedef char raw_type; // Type used for raw data on this platform
 #else
-#include <arpa/inet.h > // For inet_addr()
+#include <arpa/inet.h> // For inet_addr()
 #include <netdb.h>      // For gethostbyname()
 #include <netinet/in.h> // For sockaddr_in
 #include <string.h>
@@ -33,6 +33,7 @@ typedef char raw_type; // Type used for raw data on this platform
 typedef void raw_type; // Type used for raw data on this platform
 #endif
 
+#include <stdlib.h>
 #include <errno.h> // For errno
 
 #include "Sockets.h"

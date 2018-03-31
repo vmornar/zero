@@ -11,14 +11,24 @@
     FILE *f = fopen ("config.txt", "r");
     if (!f) fatal ("Can't open config.txt");
 
+    fprintf (stderr, "I0\n");
     sim.registers7219.pin = 1; sim.registers7219.itemSize = 16;
-    bcm2835_gpio_fsel(1, BCM2835_GPIO_FSEL_OUTP);
+    fprintf (stderr, "I0a\n");
+
+    bcm2835_gpio_fsel(16, BCM2835_GPIO_FSEL_OUTP);
+
+    fprintf (stderr, "I0b\n");
+    
     sim.sevenSegments.pin = -1;
     sim.shiftIns.pin = 2;
-    bcm2835_gpio_fsel(2, BCM2835_GPIO_FSEL_OUTP);
-    sim.shiftOuts.pin = 3;
-    bcm2835_gpio_fsel(3, BCM2835_GPIO_FSEL_OUTP);
 
+    fprintf (stderr, "I1\n");
+
+    bcm2835_gpio_fsel(20, BCM2835_GPIO_FSEL_OUTP);
+    sim.shiftOuts.pin = 3;
+    bcm2835_gpio_fsel(21, BCM2835_GPIO_FSEL_OUTP);
+
+    fprintf (stderr, "I2\n");
     while (fgets(buf, 80, f)) {
         if (buf[0] == '#') continue;
         if (strncmp (buf, "7219", 4) == 0) {

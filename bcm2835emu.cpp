@@ -21,6 +21,10 @@ void bcm2835_delay(unsigned int ms) {
     usleep (ms*1000);
 }
 
+void bcm2835_st_delay(unsigned int offset, unsigned int ms) {
+    usleep (ms);
+}
+
 void bcm2835_close() {
     getchar();
 }
@@ -36,4 +40,19 @@ void bcm2835_aux_spi_transfernb (unsigned char *output, unsigned char *input, in
         }
     }    
 }
+
+void bcm2835_spi_transfernb (unsigned char *output, unsigned char *input, int n) {
+    if (output) {
+        for (int i=0; i < n; i++) {
+            printf ("%s ", binary(output[i]));
+        }
+    }    
+}
+
+bool bcm2835_spi_begin () {return true;}
+void bcm2835_spi_end() {}
+void bcm2835_spi_chipSelect(int mode) {}
+void bcm2835_spi_setBitOrder(int mode) {}      // The default
+void bcm2835_spi_setDataMode(int mode) {}                  // The default
+void bcm2835_spi_setClockDivider(int mode) {} // The default 65536
 #endif

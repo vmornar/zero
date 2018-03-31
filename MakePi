@@ -1,5 +1,5 @@
 CC = arm-linux-gnueabihf-g++
-CFLAGS=-c -g -fpermissive
+CFLAGS=-c -g -fpermissive -std=c++11
 SRCS=$(wildcard *.cpp)
 INCLUDES=$(wildcard *.h)
 OBJS=$(SRCS:.cpp=.o)
