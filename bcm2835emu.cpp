@@ -13,6 +13,16 @@ void bcm2835_gpio_fsel(int pin, int mode) {
     return;
 }
 
+void bcm2835_gpio_set(int pin) {
+}
+
+int bcm2835_gpio_lev(int pin) {  
+}
+
+void bcm2835_gpio_clr(int pin) {  
+}
+
+
 void bcm2835_gpio_write(int pin, int val) {
     fprintf (stderr, "%d %d ", pin, val);
 }
@@ -55,4 +65,5 @@ void bcm2835_spi_chipSelect(int mode) {}
 void bcm2835_spi_setBitOrder(int mode) {}      // The default
 void bcm2835_spi_setDataMode(int mode) {}                  // The default
 void bcm2835_spi_setClockDivider(int mode) {} // The default 65536
+void delayMicroseconds(int us) {}
 #endif

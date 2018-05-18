@@ -2,7 +2,8 @@
 
 #define HIGH 1
 #define LOW 0
-#define BCM2835_GPIO_FSEL_OUTP 0
+#define BCM2835_GPIO_FSEL_OUTP 1
+#define BCM2835_GPIO_FSEL_INPT 0
 #define BCM2835_SPI_CS_NONE 0
 #define BCM2835_SPI_CLOCK_DIVIDER_1024 0
 #define BCM2835_SPI_BIT_ORDER_MSBFIRST 0
@@ -22,4 +23,8 @@ void bcm2835_spi_chipSelect(int mode);
 void bcm2835_spi_setBitOrder(int mode);      // The default
 void bcm2835_spi_setDataMode(int mode);                   // The default
 void bcm2835_spi_setClockDivider(int mode); // The default 65536
-  
+void bcm2835_gpio_set(int pin);
+int bcm2835_gpio_lev(int pin);
+void bcm2835_gpio_clr(int pin);
+void delayMicroseconds(int us);
+

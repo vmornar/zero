@@ -7,31 +7,58 @@
 
  void init () {
     char buf[80+1], name[80+1], parentName[80+1], format[80+1];
-    int commonAnode;
+    int commonAnode, pin;
+
     FILE *f = fopen ("config.txt", "r");
     if (!f) fatal ("Can't open config.txt");
 
     fprintf (stderr, "I0\n");
-    sim.registers7219.pin = 1; sim.registers7219.itemSize = 16;
+    // sim.registers7219.pin = 1; 
+    
+    sim.registers7219.itemSize = 16;
     fprintf (stderr, "I0a\n");
 
-    bcm2835_gpio_fsel(16, BCM2835_GPIO_FSEL_OUTP);
+    //bcm2835_gpio_fsel(16, BCM2835_GPIO_FSEL_OUTP);
 
     fprintf (stderr, "I0b\n");
-    
-    sim.sevenSegments.pin = -1;
-    sim.shiftIns.pin = 2;
 
     fprintf (stderr, "I1\n");
 
-    bcm2835_gpio_fsel(20, BCM2835_GPIO_FSEL_OUTP);
-    sim.shiftOuts.pin = 3;
-    bcm2835_gpio_fsel(21, BCM2835_GPIO_FSEL_OUTP);
+    // bcm2835_gpio_fsel(20, BCM2835_GPIO_FSEL_OUTP);
+    // sim.shiftOuts.pin = 3;
+    // bcm2835_gpio_fsel(21, BCM2835_GPIO_FSEL_OUTP);
 
     fprintf (stderr, "I2\n");
     while (fgets(buf, 80, f)) {
+
         if (buf[0] == '#') continue;
-        if (strncmp (buf, "7219", 4) == 0) {
+
+        if (strncmp (buf, "SIMULATOR", 9) == 0) {
+            sscanf (buf, "%*s %s %d", name, &sim.clockPin);
+        } else if (strncmp (buf, "SHIFTIN", 7) == 0) {
+            sscanf (buf, "%*s %s %d", name, &pin);
+            if (strcmp(name, "DATAPIN") == 0) {
+                sim.shiftIns.dataPin = pin;
+            } else if (strcmp(name, "SHLDPIN") == 0) {
+                sim.shiftIns.shldPin = pin;  
+            } else if (strcmp(name, "INHPIN") == 0) {
+                sim.shiftIns.inhPin = pin;
+            }       
+        } else if (strncmp (buf, "SHIFTOUT", 8) == 0) {
+            sscanf (buf, "%*s %s %d", name, &pin);
+            if (strcmp(name, "DATAPIN") == 0) {
+                sim.shiftOuts.dataPin = pin;
+            } else if (strcmp(name, "LATCHPIN") == 0) {
+                sim.shiftOuts.latchPin = pin;
+            }    
+        } else if (strncmp (buf, "SHIFT7219", 9) == 0) {
+            sscanf (buf, "%*s %s %d", name, &pin);
+            if (strcmp(name, "DATAPIN") == 0) {
+                sim.registers7219.dataPin = pin;
+            } else if (strcmp(name, "LOADPIN") == 0) {
+                sim.registers7219.loadPin = pin;
+            }        
+        } else if (strncmp (buf, "7219", 4) == 0) {
             Max7219 *m7219 = new Max7219();
             sim.registers7219.add(m7219);
             sscanf (buf, "%*s %s %d", name, &(m7219->commonAnode));

@@ -5,6 +5,9 @@
         "typeinfo": "cpp",
         "limits": "cpp",
         "xutility": "cpp",
-        "xlocale": "cpp"
+        "xlocale": "cpp",
+        "ios": "cpp",
+        "iosfwd": "cpp",
+        "xstring": "cpp"
     }
 }
