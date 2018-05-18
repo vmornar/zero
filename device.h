@@ -2,6 +2,7 @@
 #define __DEVICE
 #include <stdio.h>
 #include <string>
+#include <unistd.h>
 using namespace std;
 
 #ifdef emu
@@ -11,6 +12,10 @@ using namespace std;
     #include "bcm2835.h"
 #endif
 
+#define pinOut(pin,state) bcm2835_gpio_write((pin),(state))
+#define pinGet(pin) bcm2835_gpio_lev((pin))
+#define pinSet(pin) bcm2835_gpio_set((pin))
+#define pinClr(pin) bcm2835_gpio_clr((pin))
 
 class DeviceCollection;
 class Device {
