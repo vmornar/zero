@@ -1,8 +1,11 @@
 #include <string>
 #include <string.h>
 #include <stdlib.h>
+#include <conio.h>
 using namespace std;
+
 #include <stdio.h>
+#include <unordered_map>
 
 #include "sockets.h"
 

@@ -10,10 +10,9 @@
 #endif
 
 void Max7219::setContent (const char *buf, int start, int digits) {
-    int j;
+    int j = start;
     for (int i = 0; i < digits; i++) {
-        j = 2*(i + start)+1;
-        dc->buffer[contentIndex*dc->itemSize + j] = Sevenseg::segments[buf[i]-32];
+        dc->buffer[contentIndex*dc->itemSize + j++] = Sevenseg::segments[buf[i]-32];
     }
 }
 
@@ -22,9 +21,8 @@ void Max7219::allocateBuf (DeviceCollection *dc) {
     dc->oldBuffer = (unsigned char *) realloc (dc->oldBuffer, dc->itemSize*dc->count);
     this->dc = dc;
     contentIndex = dc->count - 1;
-    for (int i = 0; i < dc->itemSize; i += 2) {
-        dc->buffer[contentIndex*dc->itemSize + i] = i/2 + 1; //commands
-        dc->buffer[contentIndex*dc->itemSize + i + 1] = 0;
+    for (int i = 0; i < dc->itemSize; i++) {
+        dc->buffer[contentIndex*dc->itemSize + i] = 0;
     }
 }
 

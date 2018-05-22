@@ -1,7 +1,8 @@
 #include "main.h"
- 
+
  void fatal (string message) {
      fprintf (stderr, message.c_str());
+     getch();
      exit(1);
  }
 
@@ -11,24 +12,14 @@
 
     FILE *f = fopen ("config.txt", "r");
     if (!f) fatal ("Can't open config.txt");
-
-    fprintf (stderr, "I0\n");
-    // sim.registers7219.pin = 1; 
-    
-    sim.registers7219.itemSize = 16;
-    fprintf (stderr, "I0a\n");
+  
+    sim.registers7219.itemSize = 8;
 
     //bcm2835_gpio_fsel(16, BCM2835_GPIO_FSEL_OUTP);
-
-    fprintf (stderr, "I0b\n");
-
-    fprintf (stderr, "I1\n");
-
     // bcm2835_gpio_fsel(20, BCM2835_GPIO_FSEL_OUTP);
     // sim.shiftOuts.pin = 3;
     // bcm2835_gpio_fsel(21, BCM2835_GPIO_FSEL_OUTP);
 
-    fprintf (stderr, "I2\n");
     while (fgets(buf, 80, f)) {
 
         if (buf[0] == '#') continue;
@@ -70,6 +61,8 @@
             s7->name = name;
             s7->format = format;
             if (!(s7->max7219 = (Max7219 *) sim.registers7219.find(parentName))) fatal ("Can't find parent for 7seg " + s7->name);
+            sim.vars.emplace(s7->name, s7);
+            s7->init();
         } else if (strncmp (buf, "SI", 2) == 0 || strncmp (buf, "SO", 2) == 0) {
             ShiftReg *sr = new ShiftReg();
             if (strncmp (buf, "SI", 2) == 0) sim.shiftIns.add (sr);
@@ -82,6 +75,7 @@
             else sim.bitOuts.add(bit);
             sscanf (buf, "%*s %s %s %d", name, parentName, &(bit->bit));
             bit->name = name;
+            sim.vars.emplace (bit->name, bit);
             if (!(bit->shiftReg = strncmp (buf, "BI", 2) == 0 ? (ShiftReg *) sim.shiftIns.find(parentName) : (ShiftReg *) sim.shiftOuts.find(parentName)))
                 fatal ("Can't find parent for bi " + bit->name);
         }

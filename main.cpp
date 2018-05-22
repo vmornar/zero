@@ -1,8 +1,11 @@
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
+
+#ifndef emu
+#include <unistd.h>
+#endif
 
 static UDPSocket sock(50101);
 
@@ -19,16 +22,16 @@ Simulator sim;
 int main(int argc, char **argv) {
   unsigned char buf[MAXBUF + 1];
   char device[64 + 1], type[16 + 1];
-  int value, n;
+
   // for (int i=0; segments[i] < 255; i++) {
   //     printf ("%2d %c 0b%s ", i+32, i+32,
   //     Sevenseg::binary(Sevenseg::segments[i])); printf ("0b%s\n",
   //     Sevenseg::binary(Sevenseg::reverse(Sevenseg::segments[i])));
   // }
 
-  char dummy[] = "ABC";
-  char msg[] = "Alo alo";
-  sock.sendTo(msg, strlen(msg) + 1, IP, port);
+  // char dummy[] = "ABC";
+  // char msg[] = "Alo alo";
+  // sock.sendTo(msg, strlen(msg) + 1, IP, port);
 
   if (!bcm2835_init()) {
     printf("bcm2835_init failed. Are you running as root??\n");
@@ -55,9 +58,10 @@ int main(int argc, char **argv) {
   // bcm2835_gpio_write(PLPIN, HIGH);
   // bcm2835_gpio_fsel(INHPIN, BCM2835_GPIO_FSEL_OUTP);
   // bcm2835_gpio_write(INHPIN, HIGH);
+  char cmd[16], name[64], cValue[64];
+  string sName; int value; string sValue;
+  Device *p;
 
-
-  int i = 0;
   while (1) {
     // fprintf(stderr, "5f %d\n", i++);
     // bcm2835_gpio_write(PLPIN, LOW);
@@ -91,9 +95,39 @@ int main(int argc, char **argv) {
     // }
     // sim.registers7219.out();
     // sim.bitOuts.out();
+
+    printf (">");
+    scanf ("%s", cmd);
+    if (strcmp(cmd, "sv") == 0) {
+      scanf ("%s %d", name, &value);
+      sName = name;
+      p = sim.vars[sName];
+      if (!p) printf ("Not found: %s\n", sName);
+      else p->setValue (value);
+    } else if (strcmp(cmd, "ss") == 0) {
+      scanf ("%s %s", name, cValue);
+      sName = name;
+      sValue = cValue;
+      p = sim.vars[sName];
+      if (!p) printf ("Not found: %s\n", sName);
+      else p->setStr (sValue);
+    } else if (strcmp (cmd, "gv") == 0) {
+      scanf ("%s", name);
+      sName = name;
+      p = sim.vars[sName];
+      if (!p) printf ("Not found: %s\n", sName);
+      else printf ("%d\n", p->getValue());    
+    } else if (strcmp (cmd, "gv") == 0) {
+      scanf ("%s", name);
+      sName = name;
+      p = sim.vars[sName];
+      if (!p) printf ("Not found: %s\n", sName);
+      else printf ("%s\n", p->getStr().c_str()); 
+    }   
     sim.shiftIns.debugIn();
     sim.shiftOuts.debugOut();
     sim.registers7219.debugOut();
+    //getch();
   }
 
   //bcm2835_spi_end();

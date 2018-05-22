@@ -3,7 +3,10 @@
 #define __DEVICE
 #include <stdio.h>
 #include <string>
+#include <unordered_map>
+#ifndef emu
 #include <unistd.h>
+#endif
 using namespace std;
 
 #ifdef emu
@@ -29,6 +32,10 @@ public:
     DeviceCollection *dc;
     int contentIndex;
     virtual void allocateBuf(DeviceCollection *dc);
+    virtual void setValue (int val) {}
+    virtual int getValue () { return 0;}
+    virtual string getStr () { return ""; }
+    virtual void setStr (string s) {}
 };
 
 class DeviceCollection {
@@ -41,7 +48,7 @@ public:
     unsigned char *buffer = NULL;
     unsigned char *oldBuffer = NULL; 
     int count = 0;
-    int itemSize = 8;
+    int itemSize = 1;
     Device * find (string name);
     void add (Device *d);
     Device * operator[] (int i);
@@ -53,7 +60,6 @@ public:
 
 class ShiftIn :public DeviceCollection {
 public: 
-    ShiftIn(int id);
     int shldPin;
     int inhPin;
     void init();
@@ -62,7 +68,6 @@ public:
 
 class ShiftOut : public DeviceCollection {
 public: 
-    ShiftOut(int id);
     int latchPin;
     void init();
     void out ();
@@ -70,10 +75,13 @@ public:
 
 class Shift7219 : public DeviceCollection {
 public: 
-    Shift7219 (int id);
     int loadPin;
     void init();
     void out ();
+    void byteOut (unsigned char c);
+    void scanLimit ();
+    void endOut ();
+    void intensity (unsigned char n);
 };
 
 class ShiftReg : public Device {
@@ -87,7 +95,7 @@ public:
     int getValue () {
         return shiftReg->dc->buffer[shiftReg->contentIndex] >> bit & 1;
     }
-    int setValue(int value) {
+    void setValue(int value) {
         shiftReg->dc->buffer[shiftReg->contentIndex] |= (value << bit);
     }
 };
@@ -95,9 +103,18 @@ public:
 class Simulator {
 public:
     int clockPin;
-    Shift7219 registers7219(1);
-    ShiftIn shiftIns(0);
-    ShiftOut shiftOuts(2);
+
+    unordered_map<string, Device *> vars;
+
+    Shift7219 registers7219;
+    ShiftIn shiftIns;
+    ShiftOut shiftOuts;
+
+    Simulator () {
+        shiftIns.id = 0;
+        registers7219.id = 1;
+        shiftOuts.id = 2;
+    }
 
     DeviceCollection sevenSegments;
     DeviceCollection bitIns;
@@ -106,7 +123,7 @@ public:
 
 unsigned char reverse(unsigned char c);
 char *binary(unsigned char c);
-unsigned unBinary(char *s);
+unsigned char unBinary(char *s);
 
 extern Simulator sim;
 

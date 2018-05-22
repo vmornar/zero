@@ -8,6 +8,10 @@
         "xlocale": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "xmemory0": "cpp",
+        "xtr1common": "cpp"
     }
 }

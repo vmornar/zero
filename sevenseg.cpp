@@ -52,7 +52,12 @@ unsigned char Sevenseg::segments[] = {
     0b11111111 //Z
   };
 
-void Sevenseg::setInt (int val) {
+void Sevenseg::init () {
+    display = std::string (digits, ' ');
+    max7219->setContent(display.c_str(), start, digits);
+}
+
+void Sevenseg::setValue (int val) {
     char buf[8+1];
     sprintf (buf, format.c_str(), val);
     display = buf;
@@ -60,7 +65,7 @@ void Sevenseg::setInt (int val) {
     //memcpy (max7219->content+start, buf, digits);
 }
 
-void Sevenseg::setStr (char *s) {
+void Sevenseg::setStr (string s) {
     display = s;
     max7219->setContent(display.c_str(), start, digits);
 }

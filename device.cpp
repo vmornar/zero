@@ -33,7 +33,7 @@ Device * DeviceCollection::operator[] (int i) {
 }
 
 void DeviceCollection::debugIn () {
-    FILE *f = fopen ("in.txt", "r");
+    FILE *f = fopen ("0.txt", "r");
     char buf[512];
     int i=0;
     while (fscanf (f, "%s", buf) > 0) {
@@ -47,7 +47,14 @@ void DeviceCollection::debugOut() {
     if (id == 1) f = fopen ("1.txt", "w");
     else f= fopen ("2.txt", "w");
     for (int i=0; i < count; i++) {
-        fprintf ("%s ", binary(buffer[i]));
+        if (id == 1) {
+            fprintf (f, " | ");
+            for (int j = 0; j < 8; j++) {
+                 fprintf (f, "%s ", binary(buffer[i*8+j]));   
+            }
+        } else {
+            fprintf (f, "%s ", binary(buffer[i]));
+        }
     }
     fclose (f);
 }
@@ -70,10 +77,6 @@ void DeviceCollection::debugOut() {
 // void DeviceCollection::in () {
 //     bcm2835_aux_spi_transfernb (NULL, (char *) buffer, count * itemSize);
 // }
-
-ShiftIn::ShiftIn (int id) {
-    this->id = id;
-}
 
 void ShiftIn::init () {
     inputPin (dataPin);
@@ -104,11 +107,6 @@ void ShiftIn::in () {
     pinSet (inhPin);
 }
 
-
-ShiftOut::ShiftOut (int id) {
-    this->id = id;
-}
-
 void ShiftOut::init () {
     outputPin (dataPin);
     outputPin (latchPin);
@@ -134,33 +132,51 @@ void ShiftOut::out () {
     pinClr (latchPin);
 }
 
-Shift7219::Shift7219 (int id) {
-    this->id = id;
-}
-
 void Shift7219::init () {
     outputPin (dataPin);
     outputPin (loadPin);
     pinClr (loadPin);
 }
 
-void Shift7219::out () {
-    int i, j;
-    unsigned char b;
-    for (i=0; i < count; i++) {
-        b = buffer[i];
-        for (j=0; j < 8; j++) {
-            pinClr (sim.clockPin);
-            delayMicroseconds (5);
-            pinOut (dataPin, b & (1 >> j));
-            pinSet (sim.clockPin);
-            delayMicroseconds (5);
-        }
+
+void Shift7219::byteOut(unsigned char b) {
+    for (int j=0; j < 8; j++) {
+        pinClr (sim.clockPin);
+        delayMicroseconds (5);
+        pinOut (dataPin, b & (1 >> j));
+        pinSet (sim.clockPin);
+        delayMicroseconds (5);
     }
+}
+
+void Shift7219::endOut () {
     pinClr (sim.clockPin);
     pinSet (loadPin);
     delayMicroseconds (10);
     pinClr (loadPin);
+}
+
+void Shift7219::out () {
+    for (int i=0; i < count; i++) {
+        byteOut (buffer[i]);
+    }
+    endOut();
+}
+
+void Shift7219::intensity (unsigned char n) {
+    for (int i=0; i < count; i++) {
+        byteOut (0b00001010);
+        byteOut (n);
+    }
+    endOut();
+}
+
+void Shift7219::scanLimit () {
+    for (int i=0; i < count; i++) {
+        byteOut (0b00001011);
+        byteOut (8);
+    }
+    endOut();
 }
 
 unsigned char reverse (unsigned char c) {
@@ -186,4 +202,5 @@ unsigned char unBinary (char *s) {
         d = s[i] - 48;
         r += d << 7-i;
     }
+    return r;
 }
