@@ -40,6 +40,29 @@
             "windows": {
                 "MIMode": "gdb"
             }
+        },
+        {
+            "name": "(gdb) Launch",
+            "preLaunchTask": "makePiPc",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/MainPi",
+            "miDebuggerServerAddress": "192.168.137.2:2001",
+            "processName": "MainPi",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/SysGCC/Raspberry/bin/arm-linux-gnueabihf-gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }

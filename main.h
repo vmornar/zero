@@ -1,7 +1,7 @@
 #include <string>
 #include <string.h>
 #include <stdlib.h>
-#include <conio.h>
+
 using namespace std;
 
 #include <stdio.h>
@@ -10,6 +10,7 @@ using namespace std;
 #include "sockets.h"
 
 #ifdef emu
+    #include <conio.h>
     #include <winbase.h>
     #define BCM2835_H  // to skip it
     #include "bcm2835emu.h"

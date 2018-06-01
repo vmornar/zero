@@ -10,6 +10,19 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "makePiPc",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "makePiPc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
