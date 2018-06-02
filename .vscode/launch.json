@@ -48,7 +48,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/MainPi",
             "miDebuggerServerAddress": "192.168.137.2:2001",
-            "processName": "MainPi",
+            //"processName": "MainPi",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -12,6 +12,7 @@
         "tuple": "cpp",
         "utility": "cpp",
         "xmemory0": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "xhash": "cpp"
     }
 }

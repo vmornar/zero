@@ -11,15 +11,15 @@ SHIFTOUT LATCHPIN 8
 SHIFT7219 DATAPIN 15
 SHIFT7219 LOADPIN 7
 
-# Max 7219 registers
-#7219 M_VS 1
+# Max 7219 registers - add next in chain on the top
+7219 M_VS 0
 7219 M_ALT 0
 
 # Individual displays linked to registers
-#7SEG VS M_VS 5 0 %05d
-7SEG ALT M_ALT 5 0 %05d
+7SEG VS M_VS 5 0 %05d
+7SEG ALT M_ALT 5 0 %5d
 
-# Shift out registers
+# Shift out registers - add next in chain on the top
 SO SO_FCU_RIGHT
 #SO SO_FCU_MIDDLE
 #SO SO_FCU_LEFT
@@ -31,9 +31,12 @@ SI SI_FCU_RIGHT2
 #SI SI_FCU_LEFT
 
 # Output bits within shift out registers
-BO EXPED SO_FCU_RIGHT 7
+BO EXPED_A SO_FCU_RIGHT 7
 
 # Input bits within shift in registers
-BI EXPED_A SI_FCU_RIGHT1 0
- 
+BI EXPED SI_FCU_RIGHT2 F
+BI APPR SI_FCU_RIGHT2 E
+BI METRIC SI_FCU_RIGHT2 G
 
+# Rotary encoders - bit A, bit B
+RE RE_ALT SI_FCU_RIGHT1 3 1

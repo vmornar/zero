@@ -1,3 +1,6 @@
+#include <Arduino.h>
+#line 1 "c:\\Users\\Vedran\\Documents\\Projects\\zero\\main.cpp"
+#line 1 "c:\\Users\\Vedran\\Documents\\Projects\\zero\\main.cpp"
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
@@ -88,18 +91,6 @@ int main() {
   string sValue;
   Device *p;
 
-  // while (1) {
-  //   pinSet(sim.clockPin);
-  //   waitMicroSec(1);
-  //   // usleep(3);
-  //   pinClr(sim.clockPin);
-  //   waitMicroSec(1);
-  //   // usleep(3);
-  // }
-  p = sim.vars["VS"];
-  p->setValue(0);
-  p = sim.vars["ALT"];
-  p->setValue(0);
   while (1) {
     // fprintf(stderr, "5f %d\n", i++);
     // bcm2835_gpio_write(PLPIN, LOW);
@@ -133,50 +124,19 @@ int main() {
     // sim.registers7219.out();
     // sim.bitOuts.out();
 
+    p = sim.vars["VS"];
+    p->setStr("22222");
+    // sim.registers7219.onOff(0);
+    p = sim.vars["ALT"];
+    p->setStr("33333");
+    // p->setValue(value++);
+    sim.registers7219.out();
+
     p = sim.vars["EXPED"];
     p->setValue(0);
     // sim.shiftOuts.out();
 
     sim.shiftIns.in();
-
-    if (memcmp(sim.shiftIns.buffer, sim.shiftIns.oldBuffer,
-               sim.shiftIns.count) != 0) {
-      // for (int i=0; i < sim.shiftIns.count; i++) {
-      //   printf ("%s %s ", sim.shiftIns[i]->name.c_str(),
-      //   binary(sim.shiftIns.buffer[i]));
-      // }
-      // printf ("\n");
-      for (int i = 0; i < sim.rotaryEncoders.count; i++) {
-        int v = sim.rotaryEncoders[i]->getValue();
-        if (v != 0) {
-          printf("%s %d\n", sim.rotaryEncoders[i]->name.c_str(), v);
-          p = sim.vars["ALT"];
-          p->setValue(p->getValue() + v * 100);
-        }
-      }
-
-      for (int i = 0; i < sim.bitIns.count; i++) {
-        Bit *b = (Bit *)sim.bitIns[i];
-        if (b->changed()) {
-          printf("%s %d\n", b->name.c_str(), b->getValue());
-        }
-      }
-      memcpy(sim.shiftIns.oldBuffer, sim.shiftIns.buffer, sim.shiftIns.count);
-    }
-
-    if (memcmp(sim.shiftOuts.buffer, sim.shiftOuts.oldBuffer,
-               sim.shiftOuts.count) != 0) {
-      memcpy(sim.shiftOuts.oldBuffer, sim.shiftOuts.buffer,
-             sim.shiftOuts.count);
-      // sim.shiftOuts.out();
-    }
-
-    if (memcmp(sim.registers7219.buffer, sim.registers7219.oldBuffer,
-               sim.registers7219.count * sim.registers7219.itemSize) != 0) {
-      memcpy(sim.registers7219.oldBuffer, sim.registers7219.buffer,
-             sim.registers7219.count * sim.registers7219.itemSize);
-      sim.registers7219.out();
-    }
     /*
         printf (">");
         scanf ("%s", cmd);
@@ -230,3 +190,4 @@ int main() {
   // bcm2835_close();
   // return 0;
 }
+

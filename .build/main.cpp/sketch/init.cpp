@@ -77,33 +77,17 @@ void init() {
       sr->name = name;
     } else if (strncmp(buf, "BI", 2) == 0 || strncmp(buf, "BO", 2) == 0) {
       Bit *bit = new Bit();
-
       if (strncmp(buf, "BI", 2) == 0)
         sim.bitIns.add(bit);
       else
         sim.bitOuts.add(bit);
-
-      sscanf(buf, "%*s %s %s %c", name, parentName, &(bit->bit));
-      if (bit->bit >= 'A')
-        bit->bit -= 'A';
-      else
-        bit->bit -= '0';
-
+      sscanf(buf, "%*s %s %s %d", name, parentName, &(bit->bit));
       bit->name = name;
       sim.vars.emplace(bit->name, bit);
       if (!(bit->shiftReg = strncmp(buf, "BI", 2) == 0
                                 ? (ShiftReg *)sim.shiftIns.find(parentName)
                                 : (ShiftReg *)sim.shiftOuts.find(parentName)))
         fatal("Can't find parent for bi " + bit->name);
-    } else if (strncmp(buf, "RE", 2) == 0) {
-      RotaryEncoder *re = new RotaryEncoder();
-      sim.rotaryEncoders.add(re);
-      sscanf(buf, "%*s %s %s %d %d", name, parentName, &(re->bitA),
-             &(re->bitB));
-      re->name = name;
-      sim.vars.emplace(re->name, re);
-      if (!(re->shiftReg = (ShiftReg *)sim.shiftIns.find(parentName)))
-        fatal("Can't find parent for bi " + re->name);
     }
   }
 

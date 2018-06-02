@@ -8,14 +8,13 @@ public:
   Max7219 *max7219;
   int digits;
   int start;
-  int value;
   string display;
   string format;
   Sevenseg() {};
   void init();
   void setValue(int val);
   void setStr(string s);
-  int getValue();
+  // int getValue();
   // string getStr();
   static unsigned char segments[];
   void allocateBuf (DeviceCollection *dc) {}

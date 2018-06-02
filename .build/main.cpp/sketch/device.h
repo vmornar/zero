@@ -23,12 +23,6 @@ using namespace std;
 #define inputPin(pin) bcm2835_gpio_fsel((pin), BCM2835_GPIO_FSEL_INPT);
 #define outputPin(pin) bcm2835_gpio_fsel((pin), BCM2835_GPIO_FSEL_OUTP);
 
-unsigned char reverse(unsigned char c);
-char *binary(unsigned char c);
-unsigned char unBinary(char *s);
-
-void waitMicroSec(int usec);
-
 class DeviceCollection;
 
 class Device {
@@ -80,10 +74,10 @@ public:
   void out();
 };
 
-#define MAX7219_DECODE_REG (0x09)
-#define MAX7219_INTENSITY_REG (0x0A)
-#define MAX7219_SCANLIMIT_REG (0x0B)
-#define MAX7219_SHUTDOWN_REG (0X0C)
+#define MAX7219_DECODE_REG      (0x09)
+#define MAX7219_INTENSITY_REG   (0x0A)
+#define MAX7219_SCANLIMIT_REG   (0x0B)
+#define MAX7219_SHUTDOWN_REG    (0X0C)
 #define MAX7219_DISPLAYTEST_REG (0x0F)
 
 class Shift7219 : public DeviceCollection {
@@ -93,7 +87,7 @@ public:
   void init();
   void out();
   void byteOut(unsigned char c);
-  void command(unsigned char cmd, unsigned char v);
+  void command (unsigned char cmd, unsigned char v);
 };
 
 class ShiftReg : public Device {};
@@ -103,50 +97,11 @@ public:
   ShiftReg *shiftReg;
   int bit;
   void allocateBuf(DeviceCollection *dc) {}
-
-  int changed() {
-    return ((shiftReg->dc->buffer[shiftReg->contentIndex] >> bit) & 1) !=
-           ((shiftReg->dc->oldBuffer[shiftReg->contentIndex] >> bit) & 1);
-  }
-
   int getValue() {
-    printf("%s %d ", binary(shiftReg->dc->buffer[shiftReg->contentIndex]), bit);
-    return (shiftReg->dc->buffer[shiftReg->contentIndex] >> bit) & 1;
+    return shiftReg->dc->buffer[shiftReg->contentIndex] >> bit & 1;
   }
-
   void setValue(int value) {
     shiftReg->dc->buffer[shiftReg->contentIndex] |= (value << bit);
-  }
-};
-
-class RotaryEncoder : public Device {
-public:
-  ShiftReg *shiftReg;
-  int bitA;
-  int bitB;
-  int counter = 0;
-  void allocateBuf(DeviceCollection *dc) {}
-  int getValue() {
-    static int8_t direction[] = {
-        0,  -1, 1, 0, 1, 0, 0,  -1,
-        -1, 0,  0, 1, 0, 1, -1, 0}; // inverse logic, due to pullups
-    unsigned char oldReg, newReg;
-    oldReg = shiftReg->dc->oldBuffer[shiftReg->contentIndex];
-    newReg = shiftReg->dc->buffer[shiftReg->contentIndex];
-    int i = (((oldReg >> bitA) & 1) << 3) | (((oldReg >> bitB) & 1) << 2) |
-            (((newReg >> bitA) & 1) << 1) | ((newReg >> bitB) & 1);
-    // printf("%s ", binary(oldReg));
-    // printf("%s %d\n", binary(newReg), i);
-    counter += direction[i];
-    if (counter >= 4) {
-      counter = 0;
-      return 1;
-    } else if (counter <= -4) {
-      counter = 0;
-      return -1;
-    }
-    return 0;
-    // return direction[i];
   }
 };
 
@@ -169,8 +124,11 @@ public:
   DeviceCollection sevenSegments;
   DeviceCollection bitIns;
   DeviceCollection bitOuts;
-  DeviceCollection rotaryEncoders;
 };
+
+unsigned char reverse(unsigned char c);
+char *binary(unsigned char c);
+unsigned char unBinary(char *s);
 
 extern Simulator sim;
 

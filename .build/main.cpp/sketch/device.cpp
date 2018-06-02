@@ -2,8 +2,6 @@
 #include <malloc.h>
 #include <string.h>
 
-void waitMicroSec(int usec) {}
-
 void Device::allocateBuf(DeviceCollection *dc) {
   dc->buffer = (unsigned char *)realloc(dc->buffer, dc->count);
   dc->oldBuffer = (unsigned char *)realloc(dc->oldBuffer, dc->count);
@@ -94,24 +92,29 @@ void ShiftIn::in() {
   unsigned char b;
   // pinSet(inhPin);
   pinClr(shldPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
   pinSet(shldPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
   pinClr(inhPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
   for (i = 0; i < count; i++) {
     b = 0;
     for (j = 7; j >= 0; j--) {
       b |= (pinGet(dataPin) << j);
       pinSet(sim.clockPin);
-      waitMicroSec(1);
+      delayMicroseconds(5);
       pinClr(sim.clockPin);
-      waitMicroSec(1);
+      delayMicroseconds(5);
     }
     buffer[i] = b;
   }
   pinSet(inhPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
+
+  for (i = 0; i < count; i++) {
+    printf("%s ", binary(buffer[i]));
+  }
+  printf("\n");
 }
 
 void ShiftOut::init() {
@@ -127,15 +130,15 @@ void ShiftOut::out() {
     b = buffer[i];
     for (j = 7; j >= 0; j--) {
       pinClr(sim.clockPin);
-      waitMicroSec(1);
+      delayMicroseconds(5);
       pinOut(dataPin, (b >> j) & 1);
       pinSet(sim.clockPin);
-      waitMicroSec(1);
+      delayMicroseconds(5);
     }
   }
   pinClr(sim.clockPin);
   pinSet(latchPin);
-  waitMicroSec(1);
+  delayMicroseconds(10);
   pinClr(latchPin);
 }
 
@@ -148,17 +151,17 @@ void Shift7219::init() {
 void Shift7219::byteOut(unsigned char b) {
   for (int j = 7; j >= 0; j--) {
     pinOut(dataPin, (b >> j) & 1);
-    waitMicroSec(1);
+    delayMicroseconds(1);
     pinSet(sim.clockPin);
-    waitMicroSec(1);
+    delayMicroseconds(1);
     pinClr(sim.clockPin);
-    waitMicroSec(1);
+    delayMicroseconds(1);
   }
 }
 
 void Shift7219::command(unsigned char cmd, unsigned char v) {
   pinClr(loadPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
   for (int i = 0; i < count; i++) {
 
     byteOut(cmd);
@@ -169,21 +172,21 @@ void Shift7219::command(unsigned char cmd, unsigned char v) {
     // }
   }
   pinSet(loadPin);
-  waitMicroSec(1);
+  delayMicroseconds(1);
 }
 
 void Shift7219::out() {
   for (int j = 0; j < 8; j++) {
     // command (j+1, buffer[i * 8 + j]);
     pinClr(loadPin);
-    waitMicroSec(1);
+    delayMicroseconds(1);
     for (int i = 0; i < count; i++) {
       // printf("%d %s\n", j + 1, binary(buffer[i * 8 + j]));
       byteOut(j + 1);
       byteOut(buffer[i * 8 + j]);
     }
     pinSet(loadPin);
-    waitMicroSec(1);
+    delayMicroseconds(1);
   }
   // pinSet (loadPin);
   // endOut();
