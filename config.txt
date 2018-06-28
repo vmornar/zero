@@ -27,7 +27,6 @@ SO SO_FCU_RIGHT
 # Shift in registers
 SI SI_FCU_RIGHT1
 SI SI_FCU_RIGHT2
-#SI SI_FCU_MIDDLE
 #SI SI_FCU_LEFT
 
 # Output bits within shift out registers

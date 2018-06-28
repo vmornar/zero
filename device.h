@@ -36,7 +36,9 @@ public:
   Device() {}
   string name;
   DeviceCollection *dc;
+  int simIndex;
   int contentIndex;
+
   virtual void allocateBuf(DeviceCollection *dc);
   virtual void setValue(int val) {}
   virtual int getValue() { return 0; }

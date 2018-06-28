@@ -1,16 +1,57 @@
 #include "main.h"
+//#include <stdarg.h>
 
+#define MAXBUF 256
 void fatal(string message) {
   fprintf(stderr, "%s\n", message.c_str());
-  // getch();
   exit(1);
 }
 
+// void fatalF(char *format, ...) {
+//   va_list arglist;
+//   va_start(arglist, format);
+// 	vfprintf(stderr, format, arglist);
+// 	va_end(arglist);
+//   exit(1);
+// }
+
+void convertBitNumber (int &bit) {
+  if (bit >= 'A')
+    bit -= 'A';
+  else
+    bit -= '0';
+}
+
+int findIndex (char *name, char *vars[], int nVars) {
+  for (int i=0; i < nVars; i++) {
+    if (strcmp (name, vars[i]) == 0) return i;
+  }
+  std::string sname(name);
+  fatal ("Cant'find variable" + sname);
+}
+
 void init() {
-  char buf[80 + 1], name[80 + 1], parentName[80 + 1], format[80 + 1];
+  char buf[MAXBUF + 1], name[MAXBUF + 1], parentName[MAXBUF + 1], format[MAXBUF + 1], varName[MAXBUF + 1];
+  char **vars = NULL; int nVars;
   int commonAnode, pin;
 
-  FILE *f = fopen("config.txt", "r");
+  FILE *f;
+    f = fopen("Vars.txt", "r");
+  if (!f)
+    fatal("Can't open Vars.txt");
+
+  nVars = 0;
+  while (fgets(buf, MAXBUF, f) != NULL) {
+			if (buf[0] == '#') continue;
+			sscanf(buf, "%s", name);
+      vars = (char **) realloc (vars, (nVars+1)*sizeof (char *));
+      vars[nVars] = (char *) malloc (strlen(name)+1);
+      strcpy (vars[nVars], name);
+      nVars++;
+  }
+  fclose (f);
+
+  f = fopen("config.txt", "r");
   if (!f)
     fatal("Can't open config.txt");
 
@@ -83,11 +124,10 @@ void init() {
       else
         sim.bitOuts.add(bit);
 
-      sscanf(buf, "%*s %s %s %c", name, parentName, &(bit->bit));
-      if (bit->bit >= 'A')
-        bit->bit -= 'A';
-      else
-        bit->bit -= '0';
+      sscanf(buf, "%*s %s %s %c %s", name, parentName, &(bit->bit), varName);
+      bit->simIndex = findIndex (varName, vars, nVars);
+
+      convertBitNumber (bit->bit);
 
       bit->name = name;
       sim.vars.emplace(bit->name, bit);
@@ -98,14 +138,18 @@ void init() {
     } else if (strncmp(buf, "RE", 2) == 0) {
       RotaryEncoder *re = new RotaryEncoder();
       sim.rotaryEncoders.add(re);
-      sscanf(buf, "%*s %s %s %d %d", name, parentName, &(re->bitA),
-             &(re->bitB));
+      sscanf(buf, "%*s %s %s %c %c %s", name, parentName, &(re->bitA), &(re->bitB), varName);
+      re->simIndex = findIndex (varName, vars, nVars);
+      convertBitNumber (re->bitA);
+      convertBitNumber (re->bitB);
       re->name = name;
       sim.vars.emplace(re->name, re);
       if (!(re->shiftReg = (ShiftReg *)sim.shiftIns.find(parentName)))
         fatal("Can't find parent for bi " + re->name);
     }
   }
+
+  fclose (f);
 
   for (int i = 0; i < sim.registers7219.count; i++) {
     Max7219 *m = (Max7219 *)sim.registers7219[i];
