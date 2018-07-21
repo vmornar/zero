@@ -124,15 +124,15 @@ int main() {
     // sim.registers7219.out();
     // sim.bitOuts.out();
 
-    p = sim.vars["VS"];
+    p = findVar("VS");
     p->setStr("22222");
     // sim.registers7219.onOff(0);
-    p = sim.vars["ALT"];
+    p = findVar("ALT");
     p->setStr("33333");
     // p->setValue(value++);
     sim.registers7219.out();
 
-    p = sim.vars["EXPED"];
+    p = findVar("EXPED");
     p->setValue(0);
     // sim.shiftOuts.out();
 
@@ -143,26 +143,26 @@ int main() {
         if (strcmp(cmd, "sv") == 0) {
           scanf ("%s %d", name, &value);
           sName = name;
-          p = sim.vars[sName];
+          p = findVar(sName];
           if (!p) printf ("Not found: %s\n", sName.c_str());
           else p->setValue (value);
         } else if (strcmp(cmd, "ss") == 0) {
           scanf ("%s %s", name, cValue);
           sName = name;
           sValue = cValue;
-          p = sim.vars[sName];
+          p = findVar(sName];
           if (!p) printf ("Not found: %s\n", sName.c_str());
           else p->setStr (sValue);
         } else if (strcmp (cmd, "gv") == 0) {
           scanf ("%s", name);
           sName = name;
-          p = sim.vars[sName];
+          p = findVar(sName];
           if (!p) printf ("Not found: %s\n", sName.c_str());
           else printf ("%d\n", p->getValue());
         } else if (strcmp (cmd, "gv") == 0) {
           scanf ("%s", name);
           sName = name;
-          p = sim.vars[sName];
+          p = findVar(sName];
           if (!p) printf ("Not found: %s\n", sName.c_str());
           else printf ("%s\n", p->getStr().c_str());
         }

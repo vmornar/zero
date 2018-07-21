@@ -25,3 +25,4 @@ using namespace std;
 #define PIN 26 //RPI_V2_GPIO_P1_37
 
 void init ();
+Device *findVar (string name);

@@ -1,7 +1,6 @@
 {
     "version": "2.0.0",
-    "tasks": [
-        {
+    "tasks": [{
             "label": "make",
             "type": "shell",
             "command": "make",
@@ -18,6 +17,19 @@
             "args": [
                 "-f",
                 "makePiPc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "makePc",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-f",
+                "makePc"
             ],
             "group": {
                 "kind": "build",

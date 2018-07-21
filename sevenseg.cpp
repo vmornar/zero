@@ -25,7 +25,7 @@ unsigned char Sevenseg::segments[] = {
     0, 0, 0, 0, 0, 0, 0,
     0b01110111, // A
     0b00011111, // b
-    0b10011100, // C    0b00011010, //c
+    0b01011100, // C    0b00011010, //c
     0b01111010, // d
     0b01001111, // E
     0b01000111, // F
@@ -55,13 +55,13 @@ void Sevenseg::init() {
   max7219->setContent(display.c_str(), start, digits);
 }
 
-void Sevenseg::setValue(int val) {
+void Sevenseg::setValue(float val) {
   char buf[8 + 1];
   value = val;
   sprintf(buf, format.c_str(), val);
   display = buf;
-  max7219->setContent(buf, start, digits);
-  // memcpy (max7219->content+start, buf, digits);
+  max7219->setContent(buf, start, strlen(buf));
+  //max7219->setContent(buf, start, digits);
 }
 
 void Sevenseg::setStr(string s) {

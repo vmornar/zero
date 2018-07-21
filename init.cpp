@@ -15,41 +15,67 @@ void fatal(string message) {
 //   exit(1);
 // }
 
-void convertBitNumber (int &bit) {
+void convertBitNumber(int &bit) {
   if (bit >= 'A')
     bit -= 'A';
   else
     bit -= '0';
 }
 
-int findIndex (char *name, char *vars[], int nVars) {
-  for (int i=0; i < nVars; i++) {
-    if (strcmp (name, vars[i]) == 0) return i;
+// int findIndex (char *name, char *vars[], int nVars) {
+//   for (int i=0; i < nVars; i++) {
+//     if (strcmp (name, vars[i]) == 0) return i;
+//   }
+//   std::string sname(name);
+//   fatal ("Cant'find variable" + sname);
+// }
+
+Device *findVar(string varName) {
+  Device *p;
+  try {
+    p = sim.vars[varName]; // findIndex (varName, vars, nVars);
+    if (p != NULL)
+      return p;
+    throw(new exception); //    fatal("Cant'find var " + std::string(varName));
+  } catch (...) {
+    fatal("Cant'find var " + std::string(varName));
   }
-  std::string sname(name);
-  fatal ("Cant'find variable" + sname);
+}
+
+int findVar(std::unordered_map<std::string, int> vars, char *varName) {
+  try {
+    return vars.at(varName); // findIndex (varName, vars, nVars);
+  } catch (...) {
+    fatal("Cant'find var " + std::string(varName));
+  }
 }
 
 void init() {
-  char buf[MAXBUF + 1], name[MAXBUF + 1], parentName[MAXBUF + 1], format[MAXBUF + 1], varName[MAXBUF + 1];
-  char **vars = NULL; int nVars;
+  char buf[MAXBUF + 1], name[MAXBUF + 1], parentName[MAXBUF + 1],
+      format[MAXBUF + 1], varName[MAXBUF + 1];
+  // char **vars = NULL;
+  int nVars;
   int commonAnode, pin;
+  std::unordered_map<std::string, int> vars;
 
   FILE *f;
-    f = fopen("Vars.txt", "r");
+  f = fopen("Vars.txt", "r");
   if (!f)
     fatal("Can't open Vars.txt");
 
   nVars = 0;
   while (fgets(buf, MAXBUF, f) != NULL) {
-			if (buf[0] == '#') continue;
-			sscanf(buf, "%s", name);
-      vars = (char **) realloc (vars, (nVars+1)*sizeof (char *));
-      vars[nVars] = (char *) malloc (strlen(name)+1);
-      strcpy (vars[nVars], name);
-      nVars++;
+    if (buf[0] == '#')
+      continue;
+    sscanf(buf, "%s", name);
+    vars.emplace(name, nVars++);
+    printf("%s %d\n", name, vars.at(name));
+    // vars = (char **) realloc (vars, (nVars+1)*sizeof (char *));
+    // vars[nVars] = (char *) malloc (strlen(name)+1);
+    // strcpy (vars[nVars], name);
+    // nVars++;
   }
-  fclose (f);
+  fclose(f);
 
   f = fopen("config.txt", "r");
   if (!f)
@@ -100,10 +126,11 @@ void init() {
     } else if (strncmp(buf, "7SEG", 4) == 0) {
       Sevenseg *s7 = new Sevenseg();
       sim.sevenSegments.add(s7);
-      sscanf(buf, "%*s %s %s %d %d %s", name, parentName, &(s7->digits),
-             &(s7->start), format);
+      sscanf(buf, "%*s %s %s %d %d %s %s", name, parentName, &(s7->digits),
+             &(s7->start), format, varName);
       s7->name = name;
       s7->format = format;
+      s7->simIndex = findVar(vars, varName);
       if (!(s7->max7219 = (Max7219 *)sim.registers7219.find(parentName)))
         fatal("Can't find parent for 7seg " + s7->name);
       sim.vars.emplace(s7->name, s7);
@@ -125,9 +152,12 @@ void init() {
         sim.bitOuts.add(bit);
 
       sscanf(buf, "%*s %s %s %c %s", name, parentName, &(bit->bit), varName);
-      bit->simIndex = findIndex (varName, vars, nVars);
 
-      convertBitNumber (bit->bit);
+      bit->simIndex = findVar(vars, varName);
+
+      // bit->simIndex = findIndex (varName, vars, nVars);
+
+      convertBitNumber(bit->bit);
 
       bit->name = name;
       sim.vars.emplace(bit->name, bit);
@@ -138,10 +168,11 @@ void init() {
     } else if (strncmp(buf, "RE", 2) == 0) {
       RotaryEncoder *re = new RotaryEncoder();
       sim.rotaryEncoders.add(re);
-      sscanf(buf, "%*s %s %s %c %c %s", name, parentName, &(re->bitA), &(re->bitB), varName);
-      re->simIndex = findIndex (varName, vars, nVars);
-      convertBitNumber (re->bitA);
-      convertBitNumber (re->bitB);
+      sscanf(buf, "%*s %s %s %c %c %s", name, parentName, &(re->bitA),
+             &(re->bitB), varName);
+      re->simIndex = findVar(vars, varName);
+      convertBitNumber(re->bitA);
+      convertBitNumber(re->bitB);
       re->name = name;
       sim.vars.emplace(re->name, re);
       if (!(re->shiftReg = (ShiftReg *)sim.shiftIns.find(parentName)))
@@ -149,7 +180,7 @@ void init() {
     }
   }
 
-  fclose (f);
+  fclose(f);
 
   for (int i = 0; i < sim.registers7219.count; i++) {
     Max7219 *m = (Max7219 *)sim.registers7219[i];

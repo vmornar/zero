@@ -9,10 +9,16 @@
     #include "bcm2835.h"
 #endif
 
-void Max7219::setContent (const char *buf, int start, int digits) {
+void Max7219::setContent (const unsigned char *buf, int start, int digits) {
     int j = start;
     for (int i = 0; i < digits; i++) {
-        dc->buffer[contentIndex*dc->itemSize + j++] = Sevenseg::segments[buf[i]-32];
+        if (buf[i] == '.') {
+            dc->buffer[contentIndex*dc->itemSize + j - 1] |= 0b1000000;
+        } else if (buf[i] > 127) {
+             dc->buffer[contentIndex*dc->itemSize + j++] = Sevenseg::segments[(buf[i] & 0b01111111) - 32] | 0b1000000;
+        } else {
+            dc->buffer[contentIndex*dc->itemSize + j++] = Sevenseg::segments[buf[i]-32];
+        }
     }
 }
 

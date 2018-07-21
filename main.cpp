@@ -12,16 +12,16 @@ static UDPSocket sock(50101);
 static char IP[] = "127.0.0.1";
 static int port = 50100;
 
-static int pins[] = {
-    14, // 8 inh, inh 165
-    15, // 7 7seg in, data 7219
-    18, // 6 miso_out, data 165
-    23, // 5 mosi_in, data 595
-    24, // 4 clk
-    25, // 3 sh/ld 165
-    8,  // 2 rck 595
-    7   // 1 load MAX7219
-};
+// static int pins[] = {
+//     14, // 8 inh, inh 165
+//     15, // 7 7seg in, data 7219
+//     18, // 6 miso_out, data 165
+//     23, // 5 mosi_in, data 595
+//     24, // 4 clk
+//     25, // 3 sh/ld 165
+//     8,  // 2 rck 595
+//     7   // 1 load MAX7219
+// };
 
 #define PLPIN 24
 #define INHPIN 25
@@ -96,9 +96,9 @@ int main() {
   //   waitMicroSec(1);
   //   // usleep(3);
   // }
-  p = sim.vars["VS"];
+  p = findVar("Vertical");
   p->setValue(0);
-  p = sim.vars["ALT"];
+  p = findVar("Altitude");
   p->setValue(0);
   while (1) {
     // fprintf(stderr, "5f %d\n", i++);
@@ -133,24 +133,26 @@ int main() {
     // sim.registers7219.out();
     // sim.bitOuts.out();
 
-    p = sim.vars["EXPED"];
+    p = findVar("ExpediteLight");
     p->setValue(0);
     // sim.shiftOuts.out();
 
     sim.shiftIns.in();
 
+      for (int i=0; i < sim.shiftIns.count; i++) {
+        printf ("%s %s ", sim.shiftIns[i]->name.c_str(),
+        binary(sim.shiftIns.buffer[i]));
+      }
+      printf ("\n");
+
     if (memcmp(sim.shiftIns.buffer, sim.shiftIns.oldBuffer,
                sim.shiftIns.count) != 0) {
-      // for (int i=0; i < sim.shiftIns.count; i++) {
-      //   printf ("%s %s ", sim.shiftIns[i]->name.c_str(),
-      //   binary(sim.shiftIns.buffer[i]));
-      // }
-      // printf ("\n");
+
       for (int i = 0; i < sim.rotaryEncoders.count; i++) {
         int v = sim.rotaryEncoders[i]->getValue();
         if (v != 0) {
           printf("%s %d\n", sim.rotaryEncoders[i]->name.c_str(), v);
-          p = sim.vars["ALT"];
+          p = findVar("Altitude");
           p->setValue(p->getValue() + v * 100);
         }
       }

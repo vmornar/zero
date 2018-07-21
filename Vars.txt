@@ -1,1 +1,1 @@
-C:/Users/Vedran/Documents/Projects/XPi/Vars.txt
+c:/x-plane 11/Vars.txt

@@ -1,0 +1,16 @@
+CC = g++
+CFLAGS=-c -g -fpermissive -D emu -Wno-deprecated -Wno-deprecated-declarations -Wno-permissive
+SRCS=$(wildcard *.cpp)
+INCLUDES=$(wildcard *.h)
+OBJS=$(SRCS:.cpp=.o)
+MAKEFLAGS=--ignore-errors
+
+main.exe: $(OBJS)
+#	$(CC) -o $@ $(OBJS)
+	$(CC) -o $@ $(OBJS) -lws2_32
+
+$(OBJS) : %.o: %.cpp $(INCLUDES)
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	del *.o main.exe 
