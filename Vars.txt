@@ -1,1 +1,97 @@
-c:/x-plane 11/Vars.txt
+#EFIS Left
+X.EFIS_BaroL 0 - 5
+Aircraft.Cockpit.Panel.EFIS_FlightDirLightL.State 1
+Aircraft.Cockpit.Panel.EFIS_FlightDirL.Click 1
+Aircraft.Cockpit.Panel.EFIS_BaroDigit1L.State 1 X.EFIS_BaroL 0
+Aircraft.Cockpit.Panel.EFIS_BaroDigit2L.State 1 X.EFIS_BaroL 1
+Aircraft.Cockpit.Panel.EFIS_BaroDigit3L.State 1 X.EFIS_BaroL 2
+Aircraft.Cockpit.Panel.EFIS_BaroDigit4L.State 1 X.EFIS_BaroL 3
+Aircraft.Cockpit.Panel.EFIS_BaroDigit5L.State 1 X.EFIS_BaroL 4
+
+#FCU
+#Displays
+X.FCU_Speed 0 - 5
+X.FCU_Lateral 0 - 4
+X.FCU_Altitude 0 - 6
+X.FCU_Vertical 0 - 6
+
+#Buttons
+Aircraft.Cockpit.Panel.FCU_Mach.Click 1
+Aircraft.Cockpit.Panel.FCU_Mode.Click 1
+Aircraft.Cockpit.Panel.FCU_Metric.Click 1
+
+#Korrys
+Aircraft.Cockpit.Panel.FCU_Localizer.Click 1
+Aircraft.Cockpit.Panel.FCU_LocalizerLight.State 1
+Aircraft.Cockpit.Panel.FCU_AutoPilot1.Click 1
+Aircraft.Cockpit.Panel.FCU_AutoPilotLight1.State 1
+Aircraft.Cockpit.Panel.FCU_AutoPilot2.Click 1
+Aircraft.Cockpit.Panel.FCU_AutoPilotLight2.State 1
+Aircraft.Cockpit.Panel.FCU_AutoThrust.Click 1
+Aircraft.Cockpit.Panel.FCU_AutoThrustLight.State 1
+Aircraft.Cockpit.Panel.FCU_Expedite.Click 1
+Aircraft.Cockpit.Panel.FCU_ExpediteLight.State 1
+Aircraft.Cockpit.Panel.FCU_Approach.Click 1
+Aircraft.Cockpit.Panel.FCU_ApproachLight.State 1
+
+#Rotarys -1 Pull 1 Push, must send 0 after
+Aircraft.Cockpit.Panel.FCU_Speed.Position 2
+Aircraft.Cockpit.Panel.FCU_SpeedMode.Target 1
+Aircraft.Cockpit.Panel.FCU_Lateral.Position 2
+Aircraft.Cockpit.Panel.FCU_LateralMode.Target 1
+Aircraft.Cockpit.Panel.FCU_AltitudeStep.Target 1
+Aircraft.Cockpit.Panel.FCU_Altitude.Position 2
+Aircraft.Cockpit.Panel.FCU_AltitudeMode.Target 1
+Aircraft.Cockpit.Panel.FCU_Vertical.Position 2
+Aircraft.Cockpit.Panel.FCU_VerticalMode.Target 1
+
+#Lights
+Aircraft.Cockpit.Panel.FCU_SpeedType1.State 1
+Aircraft.Cockpit.Panel.FCU_SpeedType2.State 1
+Aircraft.Cockpit.Panel.FCU_LateralType1.State 1
+Aircraft.Cockpit.Panel.FCU_LateralType2.State 1
+Aircraft.Cockpit.Panel.FCU_LateralType3.State 1
+Aircraft.Cockpit.Panel.FCU_LevelType1.State 1
+Aircraft.Cockpit.Panel.FCU_LevelType2.State 1
+Aircraft.Cockpit.Panel.FCU_LevelType3.State 1
+Aircraft.Cockpit.Panel.FCU_LevelType4.State 1
+Aircraft.Cockpit.Panel.FCU_TypeHorz1.State 1
+Aircraft.Cockpit.Panel.FCU_TypeHorz2.State 1
+Aircraft.Cockpit.Panel.FCU_TypeVert1.State 1
+Aircraft.Cockpit.Panel.FCU_TypeVert2.State 1
+
+
+
+Aircraft.Cockpit.Panel.FCU_VerticalMode.State1 1
+Aircraft.Cockpit.Panel.FCU_VerticalMode.State2 1
+Aircraft.Cockpit.Panel.FCU_VerticalMode.State3 1
+
+
+
+#Digits
+Aircraft.Cockpit.Panel.FCU_SpeedDigit1.State 1 X.FCU_Speed 0
+Aircraft.Cockpit.Panel.FCU_SpeedDigit2.State 1 X.FCU_Speed 1
+Aircraft.Cockpit.Panel.FCU_SpeedDigit3.State 1 X.FCU_Speed 2
+Aircraft.Cockpit.Panel.FCU_SpeedDigit4.State 1 X.FCU_Speed 3
+Aircraft.Cockpit.Panel.FCU_SpeedDigit5.State 1 X.FCU_Speed 4
+
+Aircraft.Cockpit.Panel.FCU_LateralDigit1.State 1 X.FCU_Lateral 0
+Aircraft.Cockpit.Panel.FCU_LateralDigit2.State 1 X.FCU_Lateral 1
+Aircraft.Cockpit.Panel.FCU_LateralDigit3.State 1 X.FCU_Lateral 2
+Aircraft.Cockpit.Panel.FCU_LateralDigit4.State 1 X.FCU_Lateral 3
+
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit1.State 1 X.FCU_Altitude 0
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit2.State 1 X.FCU_Altitude 1
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit3.State 1 X.FCU_Altitude 2
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit4.State 1 X.FCU_Altitude 3
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit5.State 1 X.FCU_Altitude 4
+Aircraft.Cockpit.Panel.FCU_AltitudeDigit6.State 1 X.FCU_Altitude 5
+
+Aircraft.Cockpit.Panel.FCU_VerticalDigit1.State 1 X.FCU_Vertical 0
+Aircraft.Cockpit.Panel.FCU_VerticalDigit2.State 1 X.FCU_Vertical 1
+Aircraft.Cockpit.Panel.FCU_VerticalDigit3.State 1 X.FCU_Vertical 2
+Aircraft.Cockpit.Panel.FCU_VerticalDigit4.State 1 X.FCU_Vertical 3
+Aircraft.Cockpit.Panel.FCU_VerticalDigit5.State 1 X.FCU_Vertical 4
+Aircraft.Cockpit.Panel.FCU_VerticalDigit6.State 1 X.FCU_Vertical 5
+
+Aircraft.Cockpit.Panel.GearsLever.Target 1

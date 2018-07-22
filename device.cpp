@@ -2,7 +2,22 @@
 #include <malloc.h>
 #include <string.h>
 
-void waitMicroSec(int usec) {}
+#ifdef emu
+#include <winsock.h>
+#include "gettimeofday.h"
+#else
+#include <sys/time.h>
+#endif
+
+void waitMicroSec(int usec) { 
+  struct timeval t1, t2;
+  long dif;
+  gettimeofday (&t1, NULL);
+  do {
+    gettimeofday (&t2, NULL);
+    dif = t2.tv_sec*1000000 + t2.tv_usec - (t1.tv_sec*1000000 + t1.tv_usec);
+  } while (dif < usec);
+}
 
 void Device::allocateBuf(DeviceCollection *dc) {
   dc->buffer = (unsigned char *)realloc(dc->buffer, dc->count);
@@ -45,10 +60,11 @@ void DeviceCollection::debugIn() {
 
 void DeviceCollection::debugOut() {
   FILE *f;
-  if (id == 1)
-    f = fopen("1.txt", "w");
-  else
-    f = fopen("2.txt", "w");
+  // if (id == 1)
+  //   f = fopen("1.txt", "w");
+  // else
+  //   f = fopen("2.txt", "w");
+  f = stdout;
   for (int i = 0; i < count; i++) {
     if (id == 1) {
       fprintf(f, " | ");
@@ -59,7 +75,8 @@ void DeviceCollection::debugOut() {
       fprintf(f, "%s ", binary(buffer[i]));
     }
   }
-  fclose(f);
+
+  // fclose(f);
 }
 
 // void DeviceCollection::out () {
@@ -92,6 +109,10 @@ void ShiftIn::init() {
 void ShiftIn::in() {
   int i, j;
   unsigned char b;
+  #ifdef emu
+    debugIn();
+    return;
+  #endif
   // pinSet(inhPin);
   pinClr(shldPin);
   waitMicroSec(1);
@@ -122,6 +143,10 @@ void ShiftOut::init() {
 
 void ShiftOut::out() {
   int i, j;
+  #ifdef emu
+    debugOut();
+    return;
+  #endif
   unsigned char b;
   for (i = 0; i < count; i++) {
     b = buffer[i];

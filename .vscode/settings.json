@@ -13,6 +13,7 @@
         "utility": "cpp",
         "xmemory0": "cpp",
         "xtr1common": "cpp",
-        "xhash": "cpp"
+        "xhash": "cpp",
+        "string": "cpp"
     }
 }

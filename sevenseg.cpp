@@ -69,4 +69,8 @@ void Sevenseg::setStr(string s) {
   max7219->setContent(display.c_str(), start, digits);
 }
 
+void Sevenseg::setStr(char *s) {
+  max7219->setContent(s, start, digits);
+}
+
 int Sevenseg::getValue() { return value; }

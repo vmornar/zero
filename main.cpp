@@ -9,7 +9,8 @@
 static UDPSocket sock(50101);
 
 // static char IP[] = "192.168.137.1";
-static char IP[] = "127.0.0.1";
+// static char IP[] = "127.0.0.1";
+static char IP[] = "192.168.255.255";
 static int port = 50100;
 
 // static int pins[] = {
@@ -30,7 +31,7 @@ Simulator sim;
 #define MAXBUF 128
 
 int main() {
-  unsigned char buf[MAXBUF + 1];
+  char buf[MAXBUF + 1];
   char device[64 + 1], type[16 + 1];
 
   // for (int i=0; segments[i] < 255; i++) {
@@ -84,7 +85,7 @@ int main() {
   // bcm2835_gpio_write(INHPIN, HIGH);
   char cmd[16], name[64], cValue[64];
   string sName;
-  int value = 0;
+  int value = 0, n, simIndex;
   string sValue;
   Device *p;
 
@@ -108,19 +109,19 @@ int main() {
     // usleep(10);
     // bcm2835_gpio_write(INHPIN, LOW);
     // usleep(10);
-
     // bcm2835_spi_transfernb(dummy, msg, 1);
-
     // usleep(10);
-
     // bcm2835_gpio_write(INHPIN, HIGH);
-
     // fprintf(stderr, "%s ", binary(msg[0]));
-
     // bcm2835_delay(1000);
-
-    // n = sock.recv (buf, MAXBUF);
-    // if (n > 0) {
+    n = sock.recv (buf, MAXBUF);
+    if (n > 0) {
+      buf[n] = 0;
+      printf ("%s\n", buf);
+      sscanf (buf, "%d %s", &simIndex, cValue);
+      if (sim.devices[simIndex] != NULL) {
+        sim.devices[simIndex]->setStr (cValue);
+      }
     //   sscanf (buf, "%s %s %d", type, device, &value);
     //   if (strcmp (type, "SO") == 0) {
     //     Device *p = sim.sevenSegments.find (device);
@@ -132,19 +133,18 @@ int main() {
     // }
     // sim.registers7219.out();
     // sim.bitOuts.out();
-
-    p = findVar("ExpediteLight");
-    p->setValue(0);
+    }
     // sim.shiftOuts.out();
 
     sim.shiftIns.in();
 
-      for (int i=0; i < sim.shiftIns.count; i++) {
-        printf ("%s %s ", sim.shiftIns[i]->name.c_str(),
-        binary(sim.shiftIns.buffer[i]));
-      }
-      printf ("\n");
+// Control print
+    // for (int i=0; i < sim.shiftIns.count; i++) {
+    //   printf ("%s %s ", sim.shiftIns[i]->name.c_str(), binary(sim.shiftIns.buffer[i]));
+    // }
+    // printf ("\n");
 
+// Did something change?
     if (memcmp(sim.shiftIns.buffer, sim.shiftIns.oldBuffer,
                sim.shiftIns.count) != 0) {
 
@@ -152,8 +152,8 @@ int main() {
         int v = sim.rotaryEncoders[i]->getValue();
         if (v != 0) {
           printf("%s %d\n", sim.rotaryEncoders[i]->name.c_str(), v);
-          p = findVar("Altitude");
-          p->setValue(p->getValue() + v * 100);
+          sprintf (buf, "%d %d", sim.rotaryEncoders[i]->simIndex, v);
+          sock.sendTo (buf, strlen(buf)+1, IP, port);
         }
       }
 
@@ -161,16 +161,19 @@ int main() {
         Bit *b = (Bit *)sim.bitIns[i];
         if (b->changed()) {
           printf("%s %d\n", b->name.c_str(), b->getValue());
+          sprintf (buf, "%d %d", b->simIndex, b->getValue());
+          sock.sendTo (buf, strlen(buf)+1, IP, port);
         }
       }
       memcpy(sim.shiftIns.oldBuffer, sim.shiftIns.buffer, sim.shiftIns.count);
     }
 
+// Did something change in outputs?
     if (memcmp(sim.shiftOuts.buffer, sim.shiftOuts.oldBuffer,
                sim.shiftOuts.count) != 0) {
       memcpy(sim.shiftOuts.oldBuffer, sim.shiftOuts.buffer,
              sim.shiftOuts.count);
-      // sim.shiftOuts.out();
+      sim.shiftOuts.out();
     }
 
     if (memcmp(sim.registers7219.buffer, sim.registers7219.oldBuffer,

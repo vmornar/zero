@@ -15,6 +15,7 @@ public:
   void init();
   void setValue(float val);
   void setStr(string s);
+  void setStr(char *s);
   int getValue();
   // string getStr();
   static unsigned char segments[];

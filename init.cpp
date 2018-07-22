@@ -69,12 +69,17 @@ void init() {
       continue;
     sscanf(buf, "%s", name);
     vars.emplace(name, nVars++);
-    printf("%s %d\n", name, vars.at(name));
+    printf("%d %s %d\n", nVars-1, name, vars.at(name));
     // vars = (char **) realloc (vars, (nVars+1)*sizeof (char *));
     // vars[nVars] = (char *) malloc (strlen(name)+1);
     // strcpy (vars[nVars], name);
     // nVars++;
   }
+  sim.devices = (Device **)malloc(nVars * sizeof(Device *));
+  for (int i = 0; i < nVars; i++) {
+    sim.devices[i] = NULL;
+  }
+
   fclose(f);
 
   f = fopen("config.txt", "r");
@@ -131,6 +136,7 @@ void init() {
       s7->name = name;
       s7->format = format;
       s7->simIndex = findVar(vars, varName);
+      sim.devices[s7->simIndex] = s7;
       if (!(s7->max7219 = (Max7219 *)sim.registers7219.find(parentName)))
         fatal("Can't find parent for 7seg " + s7->name);
       sim.vars.emplace(s7->name, s7);
@@ -154,8 +160,7 @@ void init() {
       sscanf(buf, "%*s %s %s %c %s", name, parentName, &(bit->bit), varName);
 
       bit->simIndex = findVar(vars, varName);
-
-      // bit->simIndex = findIndex (varName, vars, nVars);
+      sim.devices[bit->simIndex] = bit;
 
       convertBitNumber(bit->bit);
 

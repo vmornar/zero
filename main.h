@@ -14,7 +14,9 @@ using namespace std;
     #include <winbase.h>
     #define BCM2835_H  // to skip it
     #include "bcm2835emu.h"
+    #include "gettimeofday.h"
 #else
+    #include <sys/time.h>
     #include "bcm2835.h"
 #endif
 

@@ -30,13 +30,13 @@ SI SI_FCU_RIGHT2
 7SEG Altitude M_Altitude 5 0 %05d X.FCU_Altitude
 
 # Output bits within shift out registers
-BO ExpediteLight SO_FCU_RIGHT 7
-BO ApproachLight SO_FCU_RIGHT 6
+BO ExpediteLight SO_FCU_RIGHT 7 Aircraft.Cockpit.Panel.FCU_ExpediteLight.State
+BO ApproachLight SO_FCU_RIGHT 6 Aircraft.Cockpit.Panel.FCU_ApproachLight.State
 
 # Input bits within shift in registers
-BI Expedite SI_FCU_RIGHT2 F
-BI Approach SI_FCU_RIGHT2 E
-BI Metric SI_FCU_RIGHT2 G
+BI Expedite SI_FCU_RIGHT2 F Aircraft.Cockpit.Panel.FCU_Expedite.Click
+BI Approach SI_FCU_RIGHT2 E Aircraft.Cockpit.Panel.FCU_Approach.Click
+BI Metric SI_FCU_RIGHT2 G Aircraft.Cockpit.Panel.FCU_Metric.Click
 
 # Rotary encoders - bit A, bit B
 RE RE_Altitude SI_FCU_RIGHT1 D B Aircraft.Cockpit.Panel.FCU_Altitude.Position

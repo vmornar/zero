@@ -44,6 +44,7 @@ public:
   virtual int getValue() { return 0; }
   virtual string getStr() { return ""; }
   virtual void setStr(string s) {}
+  virtual void setStr(char *s) {}
 };
 
 class DeviceCollection {
@@ -117,7 +118,12 @@ public:
   }
 
   void setValue(int value) {
+    shiftReg->dc->buffer[shiftReg->contentIndex] &= ~(1 << bit);
     shiftReg->dc->buffer[shiftReg->contentIndex] |= (value << bit);
+  }
+
+  void setStr (char *s) {
+    setValue (s[0] - '0');
   }
 };
 
@@ -157,6 +163,7 @@ public:
   int clockPin;
 
   unordered_map<string, Device *> vars;
+  Device **devices;
 
   Shift7219 registers7219;
   ShiftIn shiftIns;
