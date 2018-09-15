@@ -13,7 +13,7 @@ public:
   string format;
   Sevenseg() {};
   void init();
-  void setValue(float val);
+  void setValue(int val);
   void setStr(string s);
   void setStr(char *s);
   int getValue();

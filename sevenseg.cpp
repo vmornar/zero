@@ -55,7 +55,7 @@ void Sevenseg::init() {
   max7219->setContent(display.c_str(), start, digits);
 }
 
-void Sevenseg::setValue(float val) {
+void Sevenseg::setValue(int val) {
   char buf[8 + 1];
   value = val;
   sprintf(buf, format.c_str(), val);

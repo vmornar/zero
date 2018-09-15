@@ -12,8 +12,8 @@ SHIFT7219 DATAPIN 15
 SHIFT7219 LOADPIN 7
 
 # Max 7219 registers - add next in chain on the top
-7219 M_Vertical 0
 7219 M_Altitude 0
+7219 M_Vertical 0
 
 # Shift out registers - add next in chain on the top
 SO SO_FCU_RIGHT
@@ -37,6 +37,13 @@ BO ApproachLight SO_FCU_RIGHT 6 Aircraft.Cockpit.Panel.FCU_ApproachLight.State
 BI Expedite SI_FCU_RIGHT2 F Aircraft.Cockpit.Panel.FCU_Expedite.Click
 BI Approach SI_FCU_RIGHT2 E Aircraft.Cockpit.Panel.FCU_Approach.Click
 BI Metric SI_FCU_RIGHT2 G Aircraft.Cockpit.Panel.FCU_Metric.Click
+BI AltitudePush SI_FCU_RIGHT1 A FCU_AltitudeMode.Target 1
+BI AltitudeToggle SI_FCU_RIGHT1 C FCU_AltitudeStep.Target
+BI AltitudePull SI_FCU_RIGHT1 E FCU_AltitudeMode.Target -1
+BI VerticalPush SI_FCU_RIGHT2 A FCU_VerticalMode.Target 1
+BI VerticalPull SI_FCU_RIGHT2 D FCU_VerticalMode.Target -1
+
+
 
 # Rotary encoders - bit A, bit B
 RE RE_Altitude SI_FCU_RIGHT1 D B Aircraft.Cockpit.Panel.FCU_Altitude.Position

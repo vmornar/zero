@@ -6,22 +6,35 @@
 #include <unistd.h>
 #endif
 
-static UDPSocket sock(50101);
+static UDPSocket sock(50100);
 
 // static char IP[] = "192.168.137.1";
 // static char IP[] = "127.0.0.1";
 static char IP[] = "192.168.255.255";
-static int port = 50100;
+static int port = 50101;
+
+ static int pins[] = {
+     14, // 8 inh, inh 165
+     15, // 7 7seg in, data 7219
+     18, // 6 miso_out, data 165, data in
+     23, // 5 mosi_in, data 595, data out
+     24, // 4 clk
+     25, // 3 sh/ld 165
+     8,  // 2 rck 595, latch
+     7,   // 1 load MAX7219
+     21
+};
 
 // static int pins[] = {
-//     14, // 8 inh, inh 165
-//     15, // 7 7seg in, data 7219
-//     18, // 6 miso_out, data 165
-//     23, // 5 mosi_in, data 595
-//     24, // 4 clk
-//     25, // 3 sh/ld 165
-//     8,  // 2 rck 595
-//     7   // 1 load MAX7219
+//     15, // 8 inh, inh 165
+//     16, // 7 7seg in, data 7219
+//     1,  // 6 miso_out, data 165
+//     4,  // 5 mosi_in, data 595
+//     5,  // 4 clk
+//     6,  // 3 sh/ld 165
+//     10, // 2 rck 595
+//     11,  // 1 load MAX7219
+//     29
 // };
 
 #define PLPIN 24
@@ -30,7 +43,7 @@ static int port = 50100;
 Simulator sim;
 #define MAXBUF 128
 
-int main() {
+int main(void) {
   char buf[MAXBUF + 1];
   char device[64 + 1], type[16 + 1];
 
@@ -43,26 +56,24 @@ int main() {
   // char dummy[] = "ABC";
   // char msg[] = "Alo alo";
   // sock.sendTo(msg, strlen(msg) + 1, IP, port);
-
+  printf("Started 2\n");
   if (!bcm2835_init()) {
     printf("bcm2835_init failed. Are you running as root??\n");
     return 1;
   }
 
-  /*
-    for (int i = 0; i < 8; i++) {
-      bcm2835_gpio_fsel(pins[i], BCM2835_GPIO_FSEL_OUTP);
-    }
+  // for (int i = 0; i < 9; i++) {
+  //   bcm2835_gpio_fsel(pins[i], BCM2835_GPIO_FSEL_OUTP);
+  // }
 
-    while (1) {
-      for (int i = 0; i < 8; i++) {
-        pinSet(pins[i]);
-        delayMicroseconds(5);
-        pinClr(pins[i]);
-        delayMicroseconds(5);
-      }
-    }
-  */
+  // while (1) {
+  //   for (int i=0; i < 9; i++) {
+  //     pinSet(pins[i]);
+  //     delayMicroseconds(100);
+  //     pinClr(pins[i]);
+  //   }
+  // }
+
   // if (!bcm2835_spi_begin())
   // {
   //   printf("bcm2835_spi_begin failed. Are you running as root??\n");
@@ -78,11 +89,6 @@ int main() {
   // the default
 
   init();
-
-  // bcm2835_gpio_fsel(PLPIN, BCM2835_GPIO_FSEL_OUTP);
-  // bcm2835_gpio_write(PLPIN, HIGH);
-  // bcm2835_gpio_fsel(INHPIN, BCM2835_GPIO_FSEL_OUTP);
-  // bcm2835_gpio_write(INHPIN, HIGH);
   char cmd[16], name[64], cValue[64];
   string sName;
   int value = 0, n, simIndex;
@@ -98,9 +104,9 @@ int main() {
   //   // usleep(3);
   // }
   p = findVar("Vertical");
-  p->setValue(0);
+  p->setValue(12345);
   p = findVar("Altitude");
-  p->setValue(0);
+  p->setValue(67890);
   while (1) {
     // fprintf(stderr, "5f %d\n", i++);
     // bcm2835_gpio_write(PLPIN, LOW);
@@ -114,37 +120,38 @@ int main() {
     // bcm2835_gpio_write(INHPIN, HIGH);
     // fprintf(stderr, "%s ", binary(msg[0]));
     // bcm2835_delay(1000);
-    n = sock.recv (buf, MAXBUF);
+    n = sock.recv(buf, MAXBUF);
     if (n > 0) {
       buf[n] = 0;
-      printf ("%s\n", buf);
-      sscanf (buf, "%d %s", &simIndex, cValue);
+      printf("%s\n", buf);
+      sscanf(buf, "%d %s", &simIndex, cValue);
       if (sim.devices[simIndex] != NULL) {
-        sim.devices[simIndex]->setStr (cValue);
+        sim.devices[simIndex]->setStr(cValue);
       }
-    //   sscanf (buf, "%s %s %d", type, device, &value);
-    //   if (strcmp (type, "SO") == 0) {
-    //     Device *p = sim.sevenSegments.find (device);
-    //     ((Sevenseg *) p)->setInt (value);
-    //   } else if (strcmp (type, "BO") == 0) {
-    //     Device *p = sim.bitOuts.find(device);
-    //     ((Bit *) p)->setValue (value);
-    //   }
-    // }
-    // sim.registers7219.out();
-    // sim.bitOuts.out();
+      //   sscanf (buf, "%s %s %d", type, device, &value);
+      //   if (strcmp (type, "SO") == 0) {
+      //     Device *p = sim.sevenSegments.find (device);
+      //     ((Sevenseg *) p)->setInt (value);
+      //   } else if (strcmp (type, "BO") == 0) {
+      //     Device *p = sim.bitOuts.find(device);
+      //     ((Bit *) p)->setValue (value);
+      //   }
+      // }
+      // sim.registers7219.out();
+      // sim.bitOuts.out();
     }
     // sim.shiftOuts.out();
 
     sim.shiftIns.in();
 
-// Control print
+    // Control print
     // for (int i=0; i < sim.shiftIns.count; i++) {
-    //   printf ("%s %s ", sim.shiftIns[i]->name.c_str(), binary(sim.shiftIns.buffer[i]));
+    //   printf ("%s %s ", sim.shiftIns[i]->name.c_str(),
+    //   binary(sim.shiftIns.buffer[i]));
     // }
     // printf ("\n");
 
-// Did something change?
+    // Did something change?
     if (memcmp(sim.shiftIns.buffer, sim.shiftIns.oldBuffer,
                sim.shiftIns.count) != 0) {
 
@@ -152,8 +159,8 @@ int main() {
         int v = sim.rotaryEncoders[i]->getValue();
         if (v != 0) {
           printf("%s %d\n", sim.rotaryEncoders[i]->name.c_str(), v);
-          sprintf (buf, "%d %d", sim.rotaryEncoders[i]->simIndex, v);
-          sock.sendTo (buf, strlen(buf)+1, IP, port);
+          sprintf(buf, "%d %d", sim.rotaryEncoders[i]->simIndex, v);
+          sock.sendTo(buf, strlen(buf) + 1, IP, port);
         }
       }
 
@@ -161,14 +168,14 @@ int main() {
         Bit *b = (Bit *)sim.bitIns[i];
         if (b->changed()) {
           printf("%s %d\n", b->name.c_str(), b->getValue());
-          sprintf (buf, "%d %d", b->simIndex, b->getValue());
-          sock.sendTo (buf, strlen(buf)+1, IP, port);
+          sprintf(buf, "%d %d", b->simIndex, b->getValue());
+          sock.sendTo(buf, strlen(buf) + 1, IP, port);
         }
       }
       memcpy(sim.shiftIns.oldBuffer, sim.shiftIns.buffer, sim.shiftIns.count);
     }
 
-// Did something change in outputs?
+    // Did something change in outputs?
     if (memcmp(sim.shiftOuts.buffer, sim.shiftOuts.oldBuffer,
                sim.shiftOuts.count) != 0) {
       memcpy(sim.shiftOuts.oldBuffer, sim.shiftOuts.buffer,

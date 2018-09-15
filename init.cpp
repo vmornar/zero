@@ -2,12 +2,20 @@
 //#include <stdarg.h>
 
 #define MAXBUF 256
+void log(string message) {
+  FILE *f;
+  f = fopen("log.txt", "a");
+  fprintf(f, "%s\n", message.c_str());
+  fclose(f);
+}
+
 void fatal(string message) {
   fprintf(stderr, "%s\n", message.c_str());
+  log(message);
   exit(1);
 }
 
-// void fatalF(char *format, ...) {
+// void F(char *format, ...) {
 //   va_list arglist;
 //   va_start(arglist, format);
 // 	vfprintf(stderr, format, arglist);
@@ -27,7 +35,7 @@ void convertBitNumber(int &bit) {
 //     if (strcmp (name, vars[i]) == 0) return i;
 //   }
 //   std::string sname(name);
-//   fatal ("Cant'find variable" + sname);
+//    ("Cant'find variable" + sname);
 // }
 
 Device *findVar(string varName) {
@@ -36,9 +44,9 @@ Device *findVar(string varName) {
     p = sim.vars[varName]; // findIndex (varName, vars, nVars);
     if (p != NULL)
       return p;
-    throw(new exception); //    fatal("Cant'find var " + std::string(varName));
+    throw(new exception); //    ("Cant'find var " + std::string(varName));
   } catch (...) {
-    fatal("Cant'find var " + std::string(varName));
+    ("Cant'find var " + std::string(varName));
   }
 }
 
@@ -46,7 +54,7 @@ int findVar(std::unordered_map<std::string, int> vars, char *varName) {
   try {
     return vars.at(varName); // findIndex (varName, vars, nVars);
   } catch (...) {
-    fatal("Cant'find var " + std::string(varName));
+    ("Cant'find var " + std::string(varName));
   }
 }
 
@@ -61,19 +69,17 @@ void init() {
   FILE *f;
   f = fopen("Vars.txt", "r");
   if (!f)
-    fatal("Can't open Vars.txt");
+    ("Can't open Vars.txt");
 
   nVars = 0;
   while (fgets(buf, MAXBUF, f) != NULL) {
     if (buf[0] == '#')
       continue;
     sscanf(buf, "%s", name);
-    vars.emplace(name, nVars++);
-    printf("%d %s %d\n", nVars-1, name, vars.at(name));
-    // vars = (char **) realloc (vars, (nVars+1)*sizeof (char *));
-    // vars[nVars] = (char *) malloc (strlen(name)+1);
-    // strcpy (vars[nVars], name);
-    // nVars++;
+    
+    vars.emplace(name, nVars);
+    printf("%d %s %d\n", nVars, name, vars.at(name));
+    nVars++;
   }
   sim.devices = (Device **)malloc(nVars * sizeof(Device *));
   for (int i = 0; i < nVars; i++) {
@@ -84,7 +90,7 @@ void init() {
 
   f = fopen("config.txt", "r");
   if (!f)
-    fatal("Can't open config.txt");
+    ("Can't open config.txt");
 
   sim.registers7219.itemSize = 8;
 
@@ -138,7 +144,7 @@ void init() {
       s7->simIndex = findVar(vars, varName);
       sim.devices[s7->simIndex] = s7;
       if (!(s7->max7219 = (Max7219 *)sim.registers7219.find(parentName)))
-        fatal("Can't find parent for 7seg " + s7->name);
+        ("Can't find parent for 7seg " + s7->name);
       sim.vars.emplace(s7->name, s7);
       s7->init();
     } else if (strncmp(buf, "SI", 2) == 0 || strncmp(buf, "SO", 2) == 0) {
@@ -169,7 +175,7 @@ void init() {
       if (!(bit->shiftReg = strncmp(buf, "BI", 2) == 0
                                 ? (ShiftReg *)sim.shiftIns.find(parentName)
                                 : (ShiftReg *)sim.shiftOuts.find(parentName)))
-        fatal("Can't find parent for bi " + bit->name);
+        ("Can't find parent for bi " + bit->name);
     } else if (strncmp(buf, "RE", 2) == 0) {
       RotaryEncoder *re = new RotaryEncoder();
       sim.rotaryEncoders.add(re);
@@ -181,11 +187,20 @@ void init() {
       re->name = name;
       sim.vars.emplace(re->name, re);
       if (!(re->shiftReg = (ShiftReg *)sim.shiftIns.find(parentName)))
-        fatal("Can't find parent for bi " + re->name);
+        ("Can't find parent for bi " + re->name);
     }
   }
 
   fclose(f);
+
+  printf("Clockpin: %d\n", sim.clockPin);
+  printf("Shiftin datapin: %d\n", sim.shiftIns.dataPin);
+  printf("Shiftin shldpin: %d\n", sim.shiftIns.shldPin);
+  printf("Shiftin inhpin: %d\n", sim.shiftIns.inhPin);
+  printf("Shiftout datapin: %d\n", sim.shiftOuts.dataPin);
+  printf("Shiftout latchpin: %d\n", sim.shiftOuts.latchPin);
+  printf("Shift7219 datapin: %d\n", sim.registers7219.dataPin);
+  printf("Shift7219 loadpin: %d\n", sim.registers7219.loadPin);
 
   for (int i = 0; i < sim.registers7219.count; i++) {
     Max7219 *m = (Max7219 *)sim.registers7219[i];
@@ -194,8 +209,9 @@ void init() {
 
   for (int i = 0; i < sim.sevenSegments.count; i++) {
     Sevenseg *m = (Sevenseg *)sim.sevenSegments[i];
-    printf("7SEG %d %s %s %d %d %s\n", i, m->name.c_str(),
-           m->max7219->name.c_str(), m->digits, m->start, m->format.c_str());
+    printf("7SEG %d %s %s %d %d %s %d\n", i, m->name.c_str(),
+           m->max7219->name.c_str(), m->digits, m->start, m->format.c_str(),
+           m->simIndex);
   }
 
   for (int i = 0; i < sim.shiftIns.count; i++) {
@@ -205,7 +221,8 @@ void init() {
 
   for (int i = 0; i < sim.bitIns.count; i++) {
     Bit *m = (Bit *)sim.bitIns[i];
-    printf("BI %d %s %s\n", i, m->name.c_str(), m->shiftReg->name.c_str());
+    printf("BI %d %s %s %d\n", i, m->name.c_str(), m->shiftReg->name.c_str(),
+           m->simIndex);
   }
 
   for (int i = 0; i < sim.shiftOuts.count; i++) {
@@ -215,7 +232,8 @@ void init() {
 
   for (int i = 0; i < sim.bitOuts.count; i++) {
     Bit *m = (Bit *)sim.bitOuts[i];
-    printf("BO %d %s %s\n", i, m->name.c_str(), m->shiftReg->name.c_str());
+    printf("BO %d %s %s %d\n", i, m->name.c_str(), m->shiftReg->name.c_str(),
+           m->simIndex);
   }
 
   sim.registers7219.init();
