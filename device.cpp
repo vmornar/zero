@@ -3,19 +3,20 @@
 #include <string.h>
 
 #ifdef emu
-#include <winsock.h>
 #include "gettimeofday.h"
+#include <winsock.h>
 #else
 #include <sys/time.h>
 #endif
 
-void waitMicroSec(int usec) { 
+void waitMicroSec(int usec) {
   struct timeval t1, t2;
   long dif;
-  gettimeofday (&t1, NULL);
+
+  gettimeofday(&t1, NULL);
   do {
-    gettimeofday (&t2, NULL);
-    dif = t2.tv_sec*1000000 + t2.tv_usec - (t1.tv_sec*1000000 + t1.tv_usec);
+    gettimeofday(&t2, NULL);
+    dif = t2.tv_sec * 1000000 + t2.tv_usec - (t1.tv_sec * 1000000 + t1.tv_usec);
   } while (dif < usec);
 }
 
@@ -102,24 +103,46 @@ void ShiftIn::init() {
   inputPin(dataPin);
   outputPin(inhPin);
   outputPin(shldPin);
-  pinSet(inhPin);
+  // pinSet(inhPin);
+  // pinSet(shldPin);
+  pinClr(inhPin);
   pinSet(shldPin);
 }
 
 void ShiftIn::in() {
   int i, j;
   unsigned char b;
-  #ifdef emu
-    debugIn();
-    return;
-  #endif
+#ifdef emu
+  debugIn();
+  return;
+#endif
+  // pinClr(shldPin);
+  // waitMicroSec(1);
+  // pinSet(shldPin);
+  // waitMicroSec(1);
+  // pinClr(inhPin);
+  // waitMicroSec(1);
+  // for (i = 0; i < count; i++) {
+  //   b = 0;
+  //   for (j = 7; j >= 0; j--) {
+  //     b |= (pinGet(dataPin) << j);
+  //     pinSet(sim.clockPin);
+  //     waitMicroSec(1);
+  //     pinClr(sim.clockPin);
+  //     waitMicroSec(1);
+  //   }
+  //   buffer[i] = b;
+  // }
   // pinSet(inhPin);
+  // waitMicroSec(1);
+
+  pinSet(inhPin);
   pinClr(shldPin);
-  waitMicroSec(1);
+  waitMicroSec(5);
   pinSet(shldPin);
-  waitMicroSec(1);
   pinClr(inhPin);
   waitMicroSec(1);
+
   for (i = 0; i < count; i++) {
     b = 0;
     for (j = 7; j >= 0; j--) {
@@ -131,37 +154,49 @@ void ShiftIn::in() {
     }
     buffer[i] = b;
   }
-  pinSet(inhPin);
-  waitMicroSec(1);
 }
 
 void ShiftOut::init() {
   outputPin(dataPin);
   outputPin(latchPin);
-  pinClr(latchPin);
+  pinSet(latchPin);
+  pinClr(dataPin);
 }
 
 void ShiftOut::out() {
   int i, j;
-  #ifdef emu
-    debugOut();
-    return;
-  #endif
+#ifdef emu
+  debugOut();
+  return;
+#endif
   unsigned char b;
+
+  // for (i = 0; i < count; i++) {
+  //   b = buffer[i];
+  //   for (j = 7; j >= 0; j--) {
+  //     pinClr(sim.clockPin);
+  //     waitMicroSec(1);
+  //     pinOut(dataPin, (b >> j) & 1);
+  //     pinSet(sim.clockPin);
+  //     waitMicroSec(1);
+  //   }
+  // }
+  // pinClr(sim.clockPin);
+  // pinSet(latchPin);
+  // waitMicroSec(1);
+  // pinClr(latchPin);
+
+  pinClr(latchPin);
   for (i = 0; i < count; i++) {
     b = buffer[i];
     for (j = 7; j >= 0; j--) {
-      pinClr(sim.clockPin);
-      waitMicroSec(1);
       pinOut(dataPin, (b >> j) & 1);
       pinSet(sim.clockPin);
       waitMicroSec(1);
+      pinClr(sim.clockPin);
     }
   }
-  pinClr(sim.clockPin);
   pinSet(latchPin);
-  waitMicroSec(1);
-  pinClr(latchPin);
 }
 
 void Shift7219::init() {

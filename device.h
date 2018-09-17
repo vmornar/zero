@@ -175,6 +175,10 @@ public:
     shiftOuts.id = 2;
   }
 
+  void init() {
+    outputPin(clockPin);
+  }
+
   DeviceCollection sevenSegments;
   DeviceCollection bitIns;
   DeviceCollection bitOuts;

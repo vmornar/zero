@@ -12,8 +12,9 @@ SHIFT7219 DATAPIN 15
 SHIFT7219 LOADPIN 7
 
 # Max 7219 registers - add next in chain on the top
-7219 M_Altitude 0
 7219 M_Vertical 0
+7219 M_Altitude 0
+
 
 # Shift out registers - add next in chain on the top
 SO SO_FCU_RIGHT
@@ -25,6 +26,8 @@ SI SI_FCU_RIGHT1
 SI SI_FCU_RIGHT2
 #SI SI_FCU_LEFT
 
+
+
 # Individual displays linked to registers
 7SEG Vertical M_Vertical 5 0 %05d X.FCU_Vertical
 7SEG Altitude M_Altitude 5 0 %05d X.FCU_Altitude
@@ -32,6 +35,16 @@ SI SI_FCU_RIGHT2
 # Output bits within shift out registers
 BO ExpediteLight SO_FCU_RIGHT 7 Aircraft.Cockpit.Panel.FCU_ExpediteLight.State
 BO ApproachLight SO_FCU_RIGHT 6 Aircraft.Cockpit.Panel.FCU_ApproachLight.State
+
+#BO HdgLightTop SO_FCU_LEFT 1 Aircraft.Cockpit.Panel.FCU_LateralType1.State
+#BO TrkLightTop SO_FCU_LEFT 2 Aircraft.Cockpit.Panel.FCU_LateralType2.State
+#BO HdgLightRight SO_FCU_LEFT 3 Aircraft.Cockpit.Panel.FCU_TypeHorz1.State
+#BO TrkLightRight SO_FCU_LEFT 4 Aircraft.Cockpit.Panel.FCU_TypeHorz2.State
+
+BO VSLightTop SO_FCU_RIGHT 1 Aircraft.Cockpit.Panel.FCU_TypeVert1.State
+BO FPALightTop SO_FCU_RIGHT 2 Aircraft.Cockpit.Panel.FCU_TypeVert2.State
+BO VSLightLeft SO_FCU_RIGHT 3 Aircraft.Cockpit.Panel.FCU_LevelType3.State
+BO FPALightLeft SO_FCU_RIGHT 4 Aircraft.Cockpit.Panel.FCU_LevelType4.State
 
 # Input bits within shift in registers
 BI Expedite SI_FCU_RIGHT2 F Aircraft.Cockpit.Panel.FCU_Expedite.Click
@@ -42,8 +55,6 @@ BI AltitudeToggle SI_FCU_RIGHT1 C FCU_AltitudeStep.Target
 BI AltitudePull SI_FCU_RIGHT1 E FCU_AltitudeMode.Target -1
 BI VerticalPush SI_FCU_RIGHT2 A FCU_VerticalMode.Target 1
 BI VerticalPull SI_FCU_RIGHT2 D FCU_VerticalMode.Target -1
-
-
 
 # Rotary encoders - bit A, bit B
 RE RE_Altitude SI_FCU_RIGHT1 D B Aircraft.Cockpit.Panel.FCU_Altitude.Position

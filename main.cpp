@@ -8,9 +8,9 @@
 
 static UDPSocket sock(50100);
 
-// static char IP[] = "192.168.137.1";
+static char IP[] = "192.168.137.1";
 // static char IP[] = "127.0.0.1";
-static char IP[] = "192.168.255.255";
+//static char IP[] = "192.168.255.255";
 static int port = 50101;
 
  static int pins[] = {

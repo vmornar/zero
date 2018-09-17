@@ -63,7 +63,7 @@ void init() {
       format[MAXBUF + 1], varName[MAXBUF + 1];
   // char **vars = NULL;
   int nVars;
-  int commonAnode, pin;
+  int commonAnode, pin, n;
   std::unordered_map<std::string, int> vars;
 
   FILE *f;
@@ -75,11 +75,12 @@ void init() {
   while (fgets(buf, MAXBUF, f) != NULL) {
     if (buf[0] == '#')
       continue;
-    sscanf(buf, "%s", name);
-    
-    vars.emplace(name, nVars);
-    printf("%d %s %d\n", nVars, name, vars.at(name));
-    nVars++;
+    n = sscanf(buf, "%s", name);
+    if (n > 0) {
+      vars.emplace(name, nVars);
+      printf("%d %s %d\n", nVars, name, vars.at(name));
+      nVars++;
+    }
   }
   sim.devices = (Device **)malloc(nVars * sizeof(Device *));
   for (int i = 0; i < nVars; i++) {
@@ -236,6 +237,7 @@ void init() {
            m->simIndex);
   }
 
+  sim.init();
   sim.registers7219.init();
 
   sim.registers7219.command(MAX7219_INTENSITY_REG, 15);

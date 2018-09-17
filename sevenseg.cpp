@@ -23,6 +23,7 @@ unsigned char Sevenseg::segments[] = {
     0b01111111, // 8
     0b01111011, // 9
     0, 0, 0, 0, 0, 0, 0,
+    // uppercase
     0b01110111, // A
     0b00011111, // b
     0b01011100, // C    0b00011010, //c
@@ -45,8 +46,35 @@ unsigned char Sevenseg::segments[] = {
     0b00111110, // U
     0b00111110, // V
     0,
-    0b00110011, // Y
-    0b01101101, // Z
+    0b00110011, // X
+    0b01101101, // Y
+    0b11111111, // Z
+    0, 0, 0, 0, 0, 0,
+    // lowercase
+    0b01110111, // A
+    0b00011111, // b
+    0b00001101, // c
+    0b01111010, // d
+    0b01001111, // E
+    0b01000111, // F
+    0,
+    0b00101110, // h
+    0b00110000, // I
+    0b00111100, // J
+    //.ABCDEFG  Segments
+    0,
+    0b00001110, // L
+    0, 0,
+    0b00011101, // o
+    0b01100111, // P
+    0, 0,
+    0b01011011, // S
+    0b00001111, // t
+    0b00111110, // U
+    0b00111110, // V
+    0,
+    0b00110011, // X
+    0b01101101, // Y
     0b11111111  // Z
 };
 
@@ -61,7 +89,7 @@ void Sevenseg::setValue(int val) {
   sprintf(buf, format.c_str(), val);
   display = buf;
   max7219->setContent(buf, start, strlen(buf));
-  //max7219->setContent(buf, start, digits);
+  // max7219->setContent(buf, start, digits);
 }
 
 void Sevenseg::setStr(string s) {
@@ -69,8 +97,6 @@ void Sevenseg::setStr(string s) {
   max7219->setContent(display.c_str(), start, digits);
 }
 
-void Sevenseg::setStr(char *s) {
-  max7219->setContent(s, start, digits);
-}
+void Sevenseg::setStr(char *s) { max7219->setContent(s, start, digits); }
 
 int Sevenseg::getValue() { return value; }
