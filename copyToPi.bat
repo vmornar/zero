@@ -1,4 +1,4 @@
-copy mainPi X:
-copy config.txt X:
-copy Vars.txt X:
+copy mainPi W:
+copy config.txt W:
+copy Vars.txt W:
 

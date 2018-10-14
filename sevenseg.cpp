@@ -75,7 +75,7 @@ unsigned char Sevenseg::segments[] = {
     0,
     0b00110011, // X
     0b01101101, // Y
-    0b11111111  // Z
+    0           // Z
 };
 
 void Sevenseg::init() {
@@ -94,9 +94,9 @@ void Sevenseg::setValue(int val) {
 
 void Sevenseg::setStr(string s) {
   display = s;
-  max7219->setContent(display.c_str(), start, digits);
+  max7219->setContent(display.c_str(), start, strlen(display.c_str()));
 }
 
-void Sevenseg::setStr(char *s) { max7219->setContent(s, start, digits); }
+void Sevenseg::setStr(char *s) { max7219->setContent(s, start, strlen(s)); }
 
 int Sevenseg::getValue() { return value; }

@@ -90,7 +90,6 @@ public:
 #define MAX7219_DISPLAYTEST_REG (0x0F)
 
 class Shift7219 : public DeviceCollection {
-
 public:
   int loadPin;
   void init();
@@ -113,7 +112,6 @@ public:
   }
 
   int getValue() {
-    printf("%s %d ", binary(shiftReg->dc->buffer[shiftReg->contentIndex]), bit);
     return (shiftReg->dc->buffer[shiftReg->contentIndex] >> bit) & 1;
   }
 

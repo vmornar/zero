@@ -10,32 +10,30 @@ static UDPSocket sock(50100);
 
 static char IP[] = "192.168.137.1";
 // static char IP[] = "127.0.0.1";
-//static char IP[] = "192.168.255.255";
+// static char IP[] = "192.168.255.255";
 static int port = 50101;
 
- static int pins[] = {
-     14, // 8 inh, inh 165
-     15, // 7 7seg in, data 7219
-     18, // 6 miso_out, data 165, data in
-     23, // 5 mosi_in, data 595, data out
-     24, // 4 clk
-     25, // 3 sh/ld 165
-     8,  // 2 rck 595, latch
-     7,   // 1 load MAX7219
-     21
+static int pins[] = {
+    2,  // 1 load MAX7219
+    3,  // 7 7seg in, data 7219
+    4,  // mosi_in
+    17, // latch
+    23, // clk
+    18, // shld
+    15, // miso_out
+    14, // inh
 };
 
-// static int pins[] = {
-//     15, // 8 inh, inh 165
-//     16, // 7 7seg in, data 7219
-//     1,  // 6 miso_out, data 165
-//     4,  // 5 mosi_in, data 595
-//     5,  // 4 clk
-//     6,  // 3 sh/ld 165
-//     10, // 2 rck 595
-//     11,  // 1 load MAX7219
-//     29
-// };
+//  static int pins[] = {14, // 8 inh, inh 165
+//  15, // 7 7seg in, data 7219
+//  18, // 6 miso_out, data 165, data in
+//  23, // 5 mosi_in, data 595, data out
+
+//  17, // 4 clk
+//  4,  // 3 sh/ld 165
+//  3,  // 2 rck 595, latch
+//  2,  // 1 load MAX7219
+//  21};
 
 #define PLPIN 24
 #define INHPIN 25
@@ -103,6 +101,26 @@ int main(void) {
   //   waitMicroSec(1);
   //   // usleep(3);
   // }
+
+  // sim.clockPin = 17;
+  // ShiftIn *s = new ShiftIn();
+  // s->count = 2;
+  // s->dataPin = 18;
+  // s->inhPin = 14;
+  // s->shldPin = 4;
+  // s->init();
+  // s->buffer = (unsigned char *)malloc(1);
+  // s->oldBuffer = (unsigned char *)malloc(1);
+  // while (1) {
+  //   s->in();
+  //   for (int i = 0; i < s->count; i++) {
+  //     if (s->buffer[i] != s->oldBuffer[i]) {
+  //       printf("%d: %s %s\n", i, binary(s->oldBuffer[i]),
+  //       binary(s->buffer[i])); s->oldBuffer[i] = s->buffer[i];
+  //     }
+  //   }
+  // }
+
   p = findVar("Vertical");
   p->setValue(12345);
   p = findVar("Altitude");
@@ -154,6 +172,16 @@ int main(void) {
     // Did something change?
     if (memcmp(sim.shiftIns.buffer, sim.shiftIns.oldBuffer,
                sim.shiftIns.count) != 0) {
+      memcpy(sim.shiftIns.oldBuffer, sim.shiftIns.buffer, sim.shiftIns.count);
+      // for (int i = 0; i < sim.shiftIns.count; i++) {
+      //   printf("%s ", binary(sim.shiftIns.oldBuffer[i]));
+      // }
+      // printf("\n");
+      for (int i = 0; i < sim.shiftIns.count; i++) {
+        printf("%s ", binary(sim.shiftIns.buffer[i]));
+      }
+      printf("\n");
+      continue;
 
       for (int i = 0; i < sim.rotaryEncoders.count; i++) {
         int v = sim.rotaryEncoders[i]->getValue();
@@ -172,12 +200,20 @@ int main(void) {
           sock.sendTo(buf, strlen(buf) + 1, IP, port);
         }
       }
-      memcpy(sim.shiftIns.oldBuffer, sim.shiftIns.buffer, sim.shiftIns.count);
+
     }
 
     // Did something change in outputs?
     if (memcmp(sim.shiftOuts.buffer, sim.shiftOuts.oldBuffer,
                sim.shiftOuts.count) != 0) {
+      for (int i = 0; i < sim.shiftOuts.count; i++) {
+        printf("%s ", binary(sim.shiftOuts.oldBuffer[i]));
+      }
+      printf("\n");
+      for (int i = 0; i < sim.shiftOuts.count; i++) {
+        printf("%s ", binary(sim.shiftOuts.buffer[i]));
+      }
+      printf("\n");
       memcpy(sim.shiftOuts.oldBuffer, sim.shiftOuts.buffer,
              sim.shiftOuts.count);
       sim.shiftOuts.out();

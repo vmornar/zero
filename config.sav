@@ -1,14 +1,14 @@
 #
-SIMULATOR CLOCKPIN 23
+SIMULATOR CLOCKPIN 17
 
-SHIFTIN DATAPIN 15
-SHIFTIN SHLDPIN 18
+SHIFTIN DATAPIN 18
+SHIFTIN SHLDPIN 4
 SHIFTIN INHPIN 14
 
-SHIFTOUT DATAPIN 4
-SHIFTOUT LATCHPIN 17
+SHIFTOUT DATAPIN 23
+SHIFTOUT LATCHPIN 3
  
-SHIFT7219 DATAPIN 3
+SHIFT7219 DATAPIN 15
 SHIFT7219 LOADPIN 2
 
 
@@ -35,8 +35,8 @@ SI SI_FCU_RIGHT2
 7SEG Altitude M_Altitude 5 0 %05d X.FCU_Altitude
 
 # Output bits within shift out registers
-BO ExpediteLight SO_FCU_RIGHT 1 Aircraft.Cockpit.Panel.FCU_ExpediteLight.State
-BO ApproachLight SO_FCU_RIGHT 0 Aircraft.Cockpit.Panel.FCU_ApproachLight.State
+BO ExpediteLight SO_FCU_RIGHT 7 Aircraft.Cockpit.Panel.FCU_ExpediteLight.State
+BO ApproachLight SO_FCU_RIGHT 6 Aircraft.Cockpit.Panel.FCU_ApproachLight.State
 
 #BO HdgLightTop SO_FCU_LEFT 1 Aircraft.Cockpit.Panel.FCU_LateralType1.State
 #BO TrkLightTop SO_FCU_LEFT 2 Aircraft.Cockpit.Panel.FCU_LateralType2.State

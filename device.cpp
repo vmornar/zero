@@ -13,6 +13,8 @@ void waitMicroSec(int usec) {
   struct timeval t1, t2;
   long dif;
 
+  usec *= 1;
+
   gettimeofday(&t1, NULL);
   do {
     gettimeofday(&t2, NULL);
@@ -101,11 +103,10 @@ void DeviceCollection::debugOut() {
 
 void ShiftIn::init() {
   inputPin(dataPin);
+  pinClr(dataPin);
   outputPin(inhPin);
   outputPin(shldPin);
-  // pinSet(inhPin);
-  // pinSet(shldPin);
-  pinClr(inhPin);
+  pinSet(inhPin);
   pinSet(shldPin);
 }
 
@@ -136,10 +137,10 @@ void ShiftIn::in() {
   // pinSet(inhPin);
   // waitMicroSec(1);
 
-  pinSet(inhPin);
   pinClr(shldPin);
   waitMicroSec(5);
   pinSet(shldPin);
+  waitMicroSec(1);
   pinClr(inhPin);
   waitMicroSec(1);
 
@@ -147,6 +148,7 @@ void ShiftIn::in() {
     b = 0;
     for (j = 7; j >= 0; j--) {
       b |= (pinGet(dataPin) << j);
+      // waitMicroSec(1);
       pinSet(sim.clockPin);
       waitMicroSec(1);
       pinClr(sim.clockPin);
@@ -154,6 +156,8 @@ void ShiftIn::in() {
     }
     buffer[i] = b;
   }
+  pinSet(inhPin);
+  waitMicroSec(1);
 }
 
 void ShiftOut::init() {
